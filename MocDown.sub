@@ -1,0 +1,18 @@
+#! /bin/bash
+#SBATCH --cpu_bind=verbose,rank_ldom
+#SBATCH --cpus-per-task=6
+#SBATCH --error=MocDown.e%j
+#SBATCH --mem_bind=verbose,local
+#SBATCH --job-name=MocDown
+#SBATCH --ntasks=8
+#SBATCH --output=MocDown.o%j
+#SBATCH --partition=x
+#SBATCH --time=10-0
+
+# Verify module loading of icc-x86_64/intel-amd64, mvapich2-1.8.1, mcnp6b2, mcnpbindata-6b2
+. /etc/bashrc ;
+which mcnp6.mpi &> /dev/null || module load icc-x86_64/intel-amd64 mvapich2-1.8.1 mcnp6b2 mcnpbindata-6b2 ;
+
+# MocDown run command
+[ -e MocDown.log ] && rm -vf MocDown.log ;
+./MocDown.py inp1 -v > MocDown.log ;
