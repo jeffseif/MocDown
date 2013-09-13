@@ -1,0 +1,6 @@
+###
+# Temporary files
+###
+*.pyc
+*.swp
+*~

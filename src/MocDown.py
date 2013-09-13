@@ -2732,6 +2732,7 @@ class McnpTally(McnpCard):
     def PopulateResults(self, resultString):
         self.resultString = resultString;
         ###
+        reSpaces = ReCompile(r' {2,}', 2 | 8);
         reSpace = ReCompile(r'^ {}  ?(\d+)[(\d)<]* +$'.format(self.GetSpaceType()), 2 | 8);
         reAngle = ReCompile(r'^ [ca][on][sg][il][ne][e ] bin:  ([ \-]\d\.[ \d]{5}E[+\-]\d{2}) to ([ \-]\d\.[ \d]{5}E[+\-]\d{2}) [m ][u ] +$', 2 | 8);
         reMultiplierBin = ReCompile(r'^ multiplier bin:  [ \-]\d\.\d{5}E[+\-]\d{2} +(\d+)? +([ :\d\-]+)? +$', 2 | 8);
@@ -2770,7 +2771,7 @@ class McnpTally(McnpCard):
                     try:
                         multiplierBin = (int(float(groups[0])), int(float(groups[1])));
                     except ValueError:
-                        multiplierBin = (int(float(groups[0])), groups[1].replace(' ', ''));
+                        multiplierBin = (int(float(groups[0])), reSpaces.sub(' ', groups[1].strip()).replace(' : ', ':'));
                 else:
                     multiplierBin = None;
             ###
