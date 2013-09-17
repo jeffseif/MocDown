@@ -91,8 +91,7 @@ daysPerYear = 365.242;
 epsilon = 1e-9;
 ###
 # ORIGEN2.2 input file template
-###
-##### absorption rate (19) and fission rate (21) now; radioactivity (7) and ingestion hazard (15) later?
+### # FIXME absorption rate (19) and fission rate (21) now; radioactivity (7) and ingestion hazard (15) later?
 origenInputFileTemplate = '''\
  -1
  -1
@@ -958,7 +957,7 @@ class DepletionCalculation:
         # If a fuel temperature update exist, implement it
         ###
         if fuelTemperatureCalculation is not None:
-            ##### Implement this
+            # FIXME Implement this
             pass;
         ###
         # Write new input
@@ -2139,7 +2138,7 @@ class MocDownInputFile:
             'isotopicsConvergenceTolerance' : 1e-5,
             # [MWd/MTHM]
             'maximumBurnupStep' : 5e3,
-            # [n/cm²] ##### Pick reasonable numbers!
+            # [n/cm²] # FIXME Pick reasonable numbers!
             'maximumFluenceStep' : 8e21,
             # ''
             'mcnpExecutablePath' : '/usr/local/LANL/MCNP6/bin/mcnp6.mpi',
@@ -2153,7 +2152,7 @@ class MocDownInputFile:
             'minimumBurnupStep' : 2e2,
             # [g/cm³]
             'minimumCellMassDensityCutoff' : 1e-3,
-            # [n/cm²] ##### Pick reasonable numbers!
+            # [n/cm²] # FIXME Pick reasonable numbers!
             'minimumFluenceStep' : 3e20,
             # #
             'minimumIsotopeCutoff' : 1e-8,
@@ -2570,8 +2569,8 @@ class McnpCell(McnpCard):
                 self.universe = int(float(value));
             elif 'lat' == key:
                 self.latticeType = int(float(value));
-#            elif 'fill' == key: ##### Fix this!
-#                self.fillUniverse = int(float(value)); ##### Fix this!
+#            elif 'fill' == key: # FIXME
+#                self.fillUniverse = int(float(value)); # FIXME
         ###
         # Escape special regex characters
         ###
@@ -4262,7 +4261,7 @@ class McnpOutputFile:
             ###
             PrintNow(self);
         ###
-        if arguments.writeEnergyDepositions: ##### Thermal energy? Decay heat too?
+        if arguments.writeEnergyDepositions: # FIXME Thermal energy? Decay heat too?
             ###
             pass;
         ###
@@ -4272,7 +4271,7 @@ class McnpOutputFile:
             # F
             ###
             fileName = '{}.{}'.format(self.GetMcnpInputFile().GetFileName(), 'fedep');
-            tallyResults = {(cellNumber, ) : self.GetCellNumberFissionPower(cellNumber) for cellNumber in self.GetTallyIndices('f4')}; ##### This is a float instead of a TallyResult!
+            tallyResults = {(cellNumber, ) : self.GetCellNumberFissionPower(cellNumber) for cellNumber in self.GetTallyIndices('f4')}; # FIXME This is a float instead of a TallyResult!
             ###
             baseUnits = 'J_f / source - ';
             if arguments.writeFissionEnergyDepositions in ('ebin', 'bin'):
@@ -4540,7 +4539,7 @@ class OrigenCalculation:
         reIsotopeValue = ReCompile(r'^([ A-Z]{3}[ 0-9]{3}M?) +( \d\.\d{3}e[+\-]\d\d)+$', 2 | 8);
         ###
         TAPE6 = self.GetTAPE6();
-        tableNumbers = (7, 15, 19, 21); ##### For when parsing Ci's and radiotoxicities
+        tableNumbers = (7, 15, 19, 21); # FIXME For when parsing Ci's and radiotoxicities
         tableNumbers = (19, 21);
         self.zaid2TableNumber2Value = {tableNumber : {Zam2Zaid(Isotope2Zam(isotope), suffix) : float(value) for block in ReCompile(reBlock.format(tableNumber), 2 | 8).finditer(TAPE6) for isotopeValue in reIsotopeValue.finditer(block.group()) for isotope, value in [isotopeValue.groups()] if float(value) > 0} for tableNumber in tableNumbers};
         ###
