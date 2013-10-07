@@ -4852,9 +4852,14 @@ class RecycleCalculation:
         ###
         # Move depletion files
         ###
-        moveFiles = [arguments.transportFileName, 'transport.log', 'transmute.log'];
-        moveFiles.extend(fileName for extension in ('i', 'o', 'pkl', 'gz') for fileName in Glob('{}*.{}'.format(arguments.transportFileName, extension)));
-        for moveFile in sorted(moveFiles, reverse = True):
+        transportFileName = arguments.transportFileName;
+        moveFiles = [transportFileName, 'transport.log', 'transmute.log'];
+        moveFiles.extend(fileName for extension in ('i', 'o', 'pkl', 'gz') for fileName in Glob('{}*.{}'.format(transportFileName, extension)));
+        if '.' in transportFileName:
+            removeExtension = transportFileName.split('.')[-1];
+            moveFiles.extend(fileName for extension in ('i', 'o', 'pkl', 'gz') for fileName in Glob('{}*.{}'.format(transportFileName.replace(removeExtension, ''), extension)));
+        ###
+        for moveFile in sorted(set(moveFiles), reverse = True):
             MoveFile(moveFile, '{}{}'.format(directoryName, moveFile), display = self.GetDisplayFiles());
         ###
         return;
