@@ -607,7 +607,7 @@ class DepletionCalculation:
         ###
         self.origen2Lib2Mts = {
             1 : (102, 16, 107, 103),
-            2 : (102, 16, 17, 18),
+            2 : (102, 16, 17, -6),
             3 : (102, 16, 107, 103),
         };
         ###
@@ -3941,7 +3941,7 @@ class McnpOutputFile:
         ###
         # Accumulate fission rate from each leaf cell
         ###
-        reactionNumber = 18;
+        reactionNumber = -6;
         ###
         return sum(self.GetCellNumberReactionRate(leafCell.GetNumber(), self.FindSingleZaidMaterialNumber(zaid), reactionNumber, doFloat = True) for leafCell in self.FindLeafCells(cellNumber) for zaid in self.FindCellMaterial(cellNumber).GetZaids() if ZaIsActinide(Zaid2Za(zaid)));
     ###
@@ -3952,8 +3952,8 @@ class McnpOutputFile:
         ###
         # reactionNumber = -6 is synonymous with reactionNumber = 18
         ###
-        if -6 == reactionNumber:
-            reactionNumber = 18;
+        if 18 == reactionNumber:
+            reactionNumber = -6;
         ###
         # Ignore the possibility of leaf cells
         ###
@@ -4022,13 +4022,13 @@ class McnpOutputFile:
     ###
     def GetCellNumberQPower(self, cellNumber, qMethod):
         if 'mcnp' == qMethod:
-            ZRs = ((QFissionMCNP, 18), );
+            ZRs = ((QFissionMCNP, -6), );
         elif 'monteburns2' == qMethod:
-            ZRs = ((QFissionMonteburns2, 18), );
+            ZRs = ((QFissionMonteburns2, -6), );
         elif 'origen2' == qMethod or 'mocup' == qMethod or 'imocup' == qMethod:
-            ZRs = ((QFissionOrigen2, 18), );
+            ZRs = ((QFissionOrigen2, -6), );
         elif 'origens' == qMethod:
-            ZRs = ((QFissionOrigenS, 18), (QCaptureOrigenS, 102));
+            ZRs = ((QFissionOrigenS, -6), (QCaptureOrigenS, 102));
         ###
         return joulePerMev * sum(sum(Za2Q(Zaid2Za(zaid)) * self.GetCellNumberReactionRate(cellNumber, self.FindSingleZaidMaterialNumber(zaid), reactionNumber, doFloat = True) for zaid in self.FindCellMaterial(cellNumber).GetZaids() if ZaIsActinide(Zaid2Za(zaid))) for Za2Q, reactionNumber in ZRs);
     ###
@@ -4042,8 +4042,8 @@ class McnpOutputFile:
         ###
         # reactionNumber = -6 is synonymous with reactionNumber = 18
         ###
-        if -6 == reactionNumber:
-            reactionNumber = 18;
+        if 18 == reactionNumber:
+            reactionNumber = -6;
         ###
         # Accumulate reaction rate from each leaf cell
         ###
