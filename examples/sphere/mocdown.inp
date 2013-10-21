@@ -1,0 +1,66 @@
+# The transport cell numbers that are to be burnt -- `..' can be used to indicate a range
+burn cells = 1
+
+# Compress pickles -- (1 | 0)
+compress pickles = 1
+
+# Default ORIGEN decay library
+default decay library = decay
+
+# Default ORIGEN cross-section library
+default xs library = amo0tttc
+
+# # Depletion step constant fluxes [n/cm²·s] -- implies flux mode
+# depletion step fluxes = 0
+# depletion flux = 0
+
+# Depletion step constant powers [MWth] -- implies power mode
+# depletion step powers
+depletion power = 0.02
+
+# Length of depletion steps [days]
+# depletion step time intervals
+depletion time = 5000
+
+# Include decay heat -- (1 | 0)
+include decay heat = 0
+
+# Maximum burnup step [MWd/MTHM] -- used in equilibrium calculation
+maximum burnup step = 2.5e3
+
+# MCNP executable path
+mcnp executable path = /usr/local/LANL/MCNP6/bin/mcnp6.mpi
+
+# MCNP run command -- {executable}, {baseName}, and {xsdir} are the placeholders for the mcnp executable path, input file base name, and xsdir path, respectively
+mcnp run command = DATAPATH="" ; srun {executable} tasks 6 i={baseName}.i me={baseName}.mesh o={baseName}.o r={baseName}.tpe s={baseName}.src x={xsdir} >> transport.log 2>&1 ;
+
+# # MCNP source tape file
+# mcnp source file name = source
+
+# MCNP xsdir path
+mcnp xsdir path = /usr/local/LANL/MCNP_BINDATA/xsdir
+
+# Minimum burnup step [MWd/MTHM] -- used in equilibrium calculation
+minimum burnup step = 2e2
+
+# Minimum cell mass density cutoff [g/cm³] -- for eliminating some tallies
+minimum cell mass density cutoff = 1e-3
+
+# Minimum isotope cutoff [-] -- for eliminating lesser isotopes
+minimum isotope cutoff = 1e-10
+
+# Number of concurrent threads for ORIGEN
+number of origen threads = 20
+
+# ORIGEN executable path
+origen executable path = /usr/local/ORIGEN/bin/o2_fast
+
+# ORIGEN library path template -- put {} in place of the filename
+origen library path template = /usr/local/ORIGEN/libs/{}.lib
+
+# ORIGEN run command -- {} is the placeholder for the temporary directory
+origen run command = cd {} ; ./origen >> {}transmute.log 2>&1 ;
+
+# Q-value method -- used to estimate the thermal power when coupled neutron/photon transport isn't performed (origen2/mocup/imocup | origens | mcnp | monteburns2)
+q value method = origens
+
