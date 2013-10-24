@@ -1,4 +1,5 @@
 #! /bin/bash
+#SBATCH --account=neutronics
 #SBATCH --cpu_bind=verbose,rank_ldom
 #SBATCH --cpus-per-task=6
 #SBATCH --error=MocDown.e%j
