@@ -2094,8 +2094,6 @@ class MocDownInputFile:
             'coolantHeatedDiameter' : 0.004692958,
             # [m]
             'coolantHydraulicDiameter' : 0.00397346,
-            # [m]
-            'coolantRodDiameter' : 0.01005,
             # [MPa]
             'coolantInletPressure' : 7.25,
             # [K]
@@ -2255,7 +2253,7 @@ class MocDownInputFile:
             ###
             # Convert float parameters
             ###
-            if key in ('coolantDensityDampingCoefficient', 'coolantFlowArea', 'coolantHeatedDiameter', 'coolantHydraulicDiameter', 'coolantRodDiameter', 'coolantInletPressure', 'coolantInletTemperature', 'coolantMassFlowRate', 'criticalPowerRatioLimit', 'depletionTerminalDecayTime', 'depletionFlux', 'depletionPower', 'depletionTime', 'isotopicsConvergenceTolerance', 'maximumBurnupStep', 'maximumFluenceStep', 'minimumBurnupStep', 'minimumCellMassDensityCutoff', 'minimumFluenceStep', 'minimumIsotopeCutoff', 'multiplicationFactorConvergenceTolerance', 'thermalHydraulicConvergenceTolerance'):
+            if key in ('coolantDensityDampingCoefficient', 'coolantFlowArea', 'coolantHeatedDiameter', 'coolantHydraulicDiameter', 'coolantInletPressure', 'coolantInletTemperature', 'coolantMassFlowRate', 'criticalPowerRatioLimit', 'depletionTerminalDecayTime', 'depletionFlux', 'depletionPower', 'depletionTime', 'isotopicsConvergenceTolerance', 'maximumBurnupStep', 'maximumFluenceStep', 'minimumBurnupStep', 'minimumCellMassDensityCutoff', 'minimumFluenceStep', 'minimumIsotopeCutoff', 'multiplicationFactorConvergenceTolerance', 'thermalHydraulicConvergenceTolerance'):
                 value = float(value);
             ###
             # Convert int parameters

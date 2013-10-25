@@ -25,9 +25,6 @@ coolant heated diameter = 0.004428861
 # Coolant hydraulic diameter [m]
 coolant hydraulic diameter = 0.004113888
 
-# Coolant rod diameter [m]
-coolant rod diameter = 0.01005
-
 # Coolant inlet pressure [MPa]
 coolant inlet pressure = 7.25
 
