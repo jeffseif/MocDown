@@ -2034,11 +2034,6 @@ class MocDownInputFile:
         except IOError:
             self.inputRaw = '';
         ###
-        self.Populate();
-        ###
-        if bool(arguments.isVerbose):
-            PrintNow(self);
-        ###
         return;
     ###
     def __len__(self):
@@ -2057,139 +2052,19 @@ class MocDownInputFile:
     ###
     # Generic getter methods
     ###
+    def GetConverter(self, key):
+        return self.GetConverters()[key];
+    ###
+    def GetConverters(self):
+        return self.converters;
+    ###
     def GetFileName(self):
         return self.fileName;
     ###
     def GetInputRaw(self):
         return self.inputRaw;
     ###
-    def GetParameter(self, key):
-        return self.GetParameters()[key];
-    ###
-    def GetParameters(self):
-        return self.parameters;
-    ###
-    # Population methods
-    ###
-    def Populate(self):
-        ###
-        # Default parameter values
-        ###
-        self.parameters = {
-            # (#,#,...):(#,#, ...), ...
-            'assemblyFuelsToCools' : [],
-            # [#]
-            'burnCells' : [],
-            # T/F
-            'compressPickles' : True,
-            # [#]
-            'coolantBypassCells' : [],
-            # #
-            'coolantDensityDampingCoefficient' : 1,
-            # [m²]
-            'coolantFlowArea' : 0.030115717,
-            # [m]
-            'coolantFlowLengths' : [],
-            # [m]
-            'coolantHeatedDiameter' : 0.004692958,
-            # [m]
-            'coolantHydraulicDiameter' : 0.00397346,
-            # [MPa]
-            'coolantInletPressure' : 7.25,
-            # [K]
-            'coolantInletTemperature' : 555.71,
-            # [kg/s]
-            'coolantMassFlowRate' : 29.68,
-            # ''
-            'criticalPowerRatioCorrelation' : 'm-cise',
-            # #
-            'criticalPowerRatioFallbackIndex' : 41,
-            # #
-            'criticalPowerRatioLimit' : 1.3,
-            # ''
-            'defaultDecayLibrary' : 'decay',
-            # ''
-            'defaultPhotonLibrary' : 'gxuo2brm',
-            # ''
-            'defaultXsLibrary' : 'pwru50',
-            # [n/cm²·s]
-            'depletionStepFluxes' : [],
-            # [MWth]
-            'depletionStepPowers' : [],
-            # [days]
-            'depletionStepTimeIntervals' : [],
-            # [years]
-            'depletionTerminalDecayTime' : None,
-            # [n/cm²·s]
-            'depletionFlux' : None,
-            # [MWth]
-            'depletionPower' : None,
-            # [days]
-            'depletionTime' : None,
-            # T/F
-            'forceDecayTransport' : False,
-            # T/F
-            'includeDecayHeat' : True,
-            # ''
-            'isotopicsConvergenceNormType' : 'inf',
-            # #
-            'isotopicsConvergenceTolerance' : 1e-5,
-            # [MWd/MTHM]
-            'maximumBurnupStep' : 5e3,
-            # [n/cm²] # FIXME Pick reasonable numbers!
-            'maximumFluenceStep' : 8e21,
-            # ''
-            'mcnpExecutablePath' : '/usr/local/LANL/MCNP6/bin/mcnp6.mpi',
-            # ''
-            'mcnpRunCommand' : 'DATAPATH="" ; srun {executable} tasks 6 i={baseName}.i me={baseName}.mesh o={baseName}.o r={baseName}.tpe s={baseName}.src x={xsdir} >> transport.log 2>&1 ;',
-            # ''
-            'mcnpSourceFileName' : 'source',
-            # ''
-            'mcnpXsdirPath' : '/usr/local/LANL/MCNP_BINDATA/xsdir',
-            # [MWd/MTHM]
-            'minimumBurnupStep' : 2e2,
-            # [g/cm³]
-            'minimumCellMassDensityCutoff' : 1e-3,
-            # [n/cm²] # FIXME Pick reasonable numbers!
-            'minimumFluenceStep' : 3e20,
-            # #
-            'minimumIsotopeCutoff' : 1e-8,
-            # #
-            'multiplicationFactorConvergenceTolerance' : 100e-5,
-            # #
-            'numberOfPredictorSteps' : 0,
-            # #
-            'numberOfCorrectorSteps' : 0,
-            # #
-            'numberOfOrigenThreads' : 1,
-            # ''
-            'origenExecutablePath' : '/usr/local/ORIGEN/bin/o2_fast',
-            # ''
-            'origenLibraryPathTemplate' : '/usr/local/ORIGEN/libs/{}.lib',
-            # ''
-            'origenRunCommand' : 'cd {} ; ./origen >> {}transmute.log 2>&1',
-            # ''
-            'pressureDropCorrelation' : 'epri',
-            # ''
-            'qValueMethod' : 'origens',
-            # T/F
-            'recycleToEquilibrium' : False,
-            # ['']
-            'supplementaryMocdownLibrary' : [],
-            # ''
-            'thermalHydraulicConvergenceNormType' : '2',
-            # #
-            'thermalHydraulicConvergenceTolerance' : 5e-2,
-            # T/F
-            'updateCoolantDensities' : False,
-            # T/F
-            'updateFuelTemperatures' : False,
-            # ''
-            'voidFractionCorrelation' : 'relap',
-        };
-        ###
-        # Custom parameter values
-        ###
+    def GetKeyValueValues(self):
         reComments = ReCompile(r'\s*#.*', 2 | 8);
         for line in self.GetInputRaw().split('\n'):
             line = line.strip();
@@ -2212,68 +2087,174 @@ class MocDownInputFile:
             value = '='.join(value);
             values = [value.strip('[,];') for value in value.split() for value in value.split(',')];
             ###
-            # Convert list and string parameters
-            ###
-            if key in ('burnCells', 'coolantBypassCells'):
-                value = [];
-                for index in range(len(values)):
-                    if '..' in values[index]:
-                        lo, hi = values[index].split('.')[0 : 3 : 2];
-                        value.extend(range(int(float(lo)), int(float(hi)) + 1));
-                    else:
-                        value.append(int(float(values[index].strip(','))));
-            elif key in ('coolantFlowLengths', ):
-                value = [];
-                for index in range(len(values)):
-                    if 'r' in values[index]:
-                        repeat, number = values[index].split('r');
-                        value.extend([float(number)] * int(float(repeat)));
-                    else:
-                        value.append(float(values[index].strip(',')));
-                ###
-                assert(all(v > 0 for v in value));
-            elif key in ('depletionStepFluxes', 'depletionStepPowers', 'depletionStepTimeIntervals'):
-                value = [float(value) for value in values];
-            elif key in ('mcnpRunCommand', 'origenRunCommand'):
-                value = value.strip(' ;') + ' ;';
-            elif key in ('assemblyFuelsToCools', ):
-                value = value.split(',');
-            else:
-                value = ''.join(value.split());
-            ###
-            # Convert mapping parameters
-            ###
-            if key in ('assemblyFuelsToCools', ):
-                value = tuple({tuple(int(float(fuel)) for fuel in fuels.strip('( )').split()) : tuple(int(float(cool)) for cool in cools.strip('( )').split())} for fuels2Cools in value for fuels, cools in [fuels2Cools.split(':')]);
-            ###
-            # Convert bool parameters
-            ###
-            if key in ('compressPickles', 'forceDecayTransport', 'includeDecayHeat', 'recycleToEquilibrium', 'updateCoolantDensities', 'updateFuelTemperatures'):
-                value = bool(int(value));
-            ###
-            # Convert float parameters
-            ###
-            if key in ('coolantDensityDampingCoefficient', 'coolantFlowArea', 'coolantHeatedDiameter', 'coolantHydraulicDiameter', 'coolantInletPressure', 'coolantInletTemperature', 'coolantMassFlowRate', 'criticalPowerRatioLimit', 'depletionTerminalDecayTime', 'depletionFlux', 'depletionPower', 'depletionTime', 'isotopicsConvergenceTolerance', 'maximumBurnupStep', 'maximumFluenceStep', 'minimumBurnupStep', 'minimumCellMassDensityCutoff', 'minimumFluenceStep', 'minimumIsotopeCutoff', 'multiplicationFactorConvergenceTolerance', 'thermalHydraulicConvergenceTolerance'):
-                value = float(value);
-            ###
-            # Convert int parameters
-            ###
-            if key in ('criticalPowerRatioFallbackIndex', 'numberOfPredictorSteps', 'numberOfCorrectorSteps', 'numberOfOrigenThreads'):
-                value = int(float(value));
-            ###
-            # Convert lower parameters
-            ###
-            if key in ('criticalPowerRatioCorrelation', 'isotopicsConvergenceNormType', 'pressureDropCorrelation', 'thermalHydraulicConvergenceNormType', 'voidFractionCorrelation'):
-                value = value.lower();
+            yield key, value, values;
+    ###
+    def GetParameter(self, key):
+        return self.GetParameters()[key];
+    ###
+    def GetParameters(self):
+        return self.parameters;
+    ###
+    # Population methods
+    ###
+    def Populate(self):
+        ###
+        # Default parameter values
+        ###
+        self.parameters = {
+            # T/F
+            'compressPickles' : True,
+            'forceDecayTransport' : False,
+            'includeDecayHeat' : True,
+            'recycleToEquilibrium' : False,
+            'updateCoolantDensities' : False,
+            'updateFuelTemperatures' : False,
+            # #
+            'numberOfPredictorSteps' : 0,
+            'numberOfCorrectorSteps' : 0,
+            'numberOfOrigenThreads' : 1,
+            # #.#
+            'depletionTerminalDecayTime' : None, # [years]
+            'depletionFlux' : None, # [n/cm²·s]
+            'depletionPower' : None, # [MWth]
+            'depletionTime' : None, # [days]
+            'isotopicsConvergenceTolerance' : 1e-5,
+            'maximumBurnupStep' : 5e3, # [MWd/MTHM]
+            'maximumFluenceStep' : 8e21, # [n/cm²] # FIXME Pick reasonable numbers!
+            'minimumBurnupStep' : 2e2, # [MWd/MTHM]
+            'minimumCellMassDensityCutoff' : 1e-3, # [g/cm³]
+            'minimumFluenceStep' : 3e20, # [n/cm²] # FIXME Pick reasonable numbers!
+            'minimumIsotopeCutoff' : 1e-8,
+            'multiplicationFactorConvergenceTolerance' : 100e-5,
+            # ''.lower()
+            'isotopicsConvergenceNormType' : 'inf',
+            # ''
+            'defaultDecayLibrary' : 'decay',
+            'defaultPhotonLibrary' : 'gxuo2brm',
+            'defaultXsLibrary' : 'pwru50',
+            'mcnpExecutablePath' : '/usr/local/LANL/MCNP6/bin/mcnp6.mpi',
+            'mcnpSourceFileName' : 'source',
+            'mcnpXsdirPath' : '/usr/local/LANL/MCNP_BINDATA/xsdir',
+            'origenExecutablePath' : '/usr/local/ORIGEN/bin/o2_fast',
+            'origenLibraryPathTemplate' : '/usr/local/ORIGEN/libs/{}.lib',
+            'qValueMethod' : 'origens',
+            # [#]
+            'burnCells' : [],
+            # [#.#]
+            'depletionStepFluxes' : [], # [n/cm²·s]
+            'depletionStepPowers' : [], # [MWth]
+            'depletionStepTimeIntervals' : [], # [days]
+            # ['']
+            'supplementaryMocdownLibrary' : [],
+            # /
+            'mcnpRunCommand' : 'DATAPATH="" ; srun {executable} tasks 6 i={baseName}.i me={baseName}.mesh o={baseName}.o r={baseName}.tpe s={baseName}.src x={xsdir} >> transport.log 2>&1 ;',
+            'origenRunCommand' : 'cd {} ; ./origen >> {}transmute.log 2>&1',
+        };
+        ###
+        # Default converters
+        ###
+        Bool = lambda value, values: bool(int(value));
+        Float = lambda value, values: float(value);
+        Int = lambda value, values: int(float(value));
+        ###
+        def ListInt(value, values):
+            out = [];
+            for index in range(len(values)):
+                if '..' in values[index]:
+                    lo, hi = values[index].split('.')[0 : 3 : 2];
+                    out.extend(range(int(float(lo)), int(float(hi)) + 1));
+                else:
+                    out.append(int(float(values[index].strip(','))));
+            return out;
+        ###
+        def ListFloat(value, values):
+            out = [];
+            for index in range(len(values)):
+                if 'r' in values[index]:
+                    repeat, number = values[index].split('r');
+                    out.extend([float(number)] * int(float(repeat)));
+                else:
+                    out.append(float(values[index].strip(',')));
+            return out;
+        ###
+        ListReturn = lambda value, values: [value for value in values];
+        Lower = lambda value, values: value.strip().lower();
+        Return = lambda value, values: value.strip();
+        Path = lambda value, values: value.strip(' ;') + ' ;';
+        ###
+        self.converters = {
+            # T/F
+            'compressPickles' : Bool,
+            'forceDecayTransport' : Bool,
+            'includeDecayHeat' : Bool,
+            'recycleToEquilibrium' : Bool,
+            'updateCoolantDensities' : Bool,
+            'updateFuelTemperatures' : Bool,
+            # #
+            'numberOfPredictorSteps' : Int,
+            'numberOfCorrectorSteps'  : Int,
+            'numberOfOrigenThreads' : Int,
+            # #.#
+            'depletionTerminalDecayTime' : Float,
+            'depletionFlux' : Float,
+            'depletionPower' : Float,
+            'depletionTime' : Float,
+            'isotopicsConvergenceTolerance' : Float,
+            'maximumBurnupStep' : Float,
+            'maximumFluenceStep' : Float,
+            'minimumBurnupStep' : Float,
+            'minimumCellMassDensityCutoff' : Float,
+            'minimumFluenceStep' : Float,
+            'minimumIsotopeCutoff' : Float,
+            'multiplicationFactorConvergenceTolerance' : Float,
+            # ''.lower()
+            'isotopicsConvergenceNormType' : Lower,
+            # ''
+            'defaultDecayLibrary' : Return,
+            'defaultPhotonLibrary' : Return,
+            'defaultXsLibrary' : Return,
+            'mcnpExecutablePath' : Return,
+            'mcnpSourceFileName' : Return,
+            'mcnpXsdirPath' : Return,
+            'origenExecutablePath' : Return,
+            'origenLibraryPathTemplate' : Return,
+            'qValueMethod' : Return,
+            # [#]
+            'burnCells' : ListInt,
+            # [#.#]
+            'depletionStepFluxes' : ListFloat,
+            'depletionStepPowers' : ListFloat,
+            'depletionStepTimeIntervals' : ListFloat,
+            # ['']
+            'supplementaryMocdownLibrary' : ListReturn,
+            # /
+            'mcnpRunCommand' : Path,
+            'origenRunCommand' : Path,
+        };
+        ###
+        # Import library parameters
+        ###
+        parameters, converters = self.GetLibraryParametersConverters();
+        ###
+        self.parameters.update(parameters);
+        self.converters.update(converters);
+        ###
+        # Custom parameter values
+        ###
+        for key, value, values in self.GetKeyValueValues():
             ###
             # Only allow for defined parameters
             ###
             assert(key in self.GetParameters());
+            parameter = self.GetParameter(key);
             ###
-            if key in ('assemblyFuelsToCools', 'supplementaryMocdownLibrary'):
-                self.parameters[key].append(value);
+            assert(key in self.GetConverters());
+            converter = self.GetConverter(key);
+            ###
+            if isinstance(parameter, list):
+                self.parameters[key].extend(converter(value, values));
             else:
-                self.parameters[key] = value;
+                self.parameters[key] = converter(value, values);
         ###
         # Determine isPredictorMode
         ###
@@ -2358,7 +2339,13 @@ class MocDownInputFile:
         ###
         self.parameters['burnUnits'] = ['n/cm²·s', 'MWth'][self.GetParameter('isPowerMode')];
         ###
+        if bool(arguments.isVerbose):
+            PrintNow(self);
+        ###
         return;
+    ###
+    def GetLibraryParametersConverters(self):
+        return {}, {};
 ###
 # MCNP card
 ###
@@ -5198,11 +5185,20 @@ def ExistsAndNewer(pathOne, pathTwo):
 ###
 # Import supplementary libraries;
 ###
-def ImportLibraries(moduleFileNames):
+def ImportLibraries(mocDownInputFile):
     ###
     # Iterate over libraries
     ###
-    for moduleFileName in moduleFileNames:
+    for key, moduleFileName, values in mocDownInputFile.GetKeyValueValues():
+        ###
+        # Kick out if not a MocDown library
+        ###
+        if 'supplementaryMocdownLibrary' != key:
+            continue;
+        ###
+        # Strip whitespace from module filename
+        ###
+        moduleFileName = moduleFileName.strip();
         ###
         # Import module
         ###
@@ -5214,7 +5210,7 @@ def ImportLibraries(moduleFileNames):
             ###
             # Attach module methods to MocDown
             ###
-            for mocDownClass in (DepletionCalculation, RecycleCalculation):
+            for mocDownClass in (DepletionCalculation, RecycleCalculation, MocDownInputFile):
                 if subModule in dir(mocDownClass):
                     ###
                     # Kick out builtin methods
@@ -5227,7 +5223,7 @@ def ImportLibraries(moduleFileNames):
         # Attach functions and variables
         ###
         currentModule = Modules[__name__];
-        for variableName in ('Array', 'Exponent', 'LinearInterpolate', 'McnpInputFile', 'Nan2Num', 'NaturalLogarithm', 'NonZero', 'PrintNow', 'Warning', 'WordArrange', 'WriteFile', 'ZaIsActinide', 'Zeros', 'avogadrosNumber', 'epsilon', 'mocDownInputFile', 'xsDir', 'za2MolarMass'):
+        for variableName in ('Array', 'Exponent', 'LinearInterpolate', 'McnpInputFile', 'Nan2Num', 'NaturalLogarithm', 'NonZero', 'PrintNow', 'Warning', 'WordArrange', 'WriteFile', 'ZaIsActinide', 'Zeros', 'avogadrosNumber', 'epsilon', 'mocDownInputFile'):
             variable = getattr(currentModule, variableName);
             setattr(module, variableName, variable);
 ###
@@ -5942,19 +5938,22 @@ if __name__ == '__main__':
     ###
     arguments = InterpretArguments();
     ###
-    # Parse MocDown input file
+    # Read MocDown input file
     ###
     mocDownInputFile = MocDownInputFile(arguments);
+    ###
+    # Import supplementary MocDown library(s) and overwrite DepletionCalculation, RecycleCalculation, and MocDownInputFile methods
+    ###
+    ImportLibraries(mocDownInputFile);
+    ###
+    # Populate MocDown input file
+    ###
+    mocDownInputFile.Populate();
     ###
     # Parse xsdir
     ###
     xsDir = ReadXsDir(path = mocDownInputFile.GetParameter('mcnpXsdirPath'), display = not bool(arguments.isQuiet));
     za2MolarMass = Za2MolarMass(xsDir);
-    ###
-    # Import supplementary MocDown library and overwrite DepletionCalculation methods
-    ###
-    if len(mocDownInputFile.GetParameter('supplementaryMocdownLibrary')):
-        ImportLibraries(mocDownInputFile.GetParameter('supplementaryMocdownLibrary'));
     ###
     if arguments.script == 'MocDown':
         ###
