@@ -5988,6 +5988,7 @@ else:
     # Empty MocDown input file
     ###
     mocDownInputFile = MocDownInputFile(arguments);
+    mocDownInputFile.Populate();
     ###
     # Parse xsdir
     ###
