@@ -30,7 +30,9 @@ if 'Offline' in __file__.split('/')[-1].replace('.py', ''):
 # Void-fraction and critical power ratio calculation results
 ###
 class BoilingCalculation:
+    '''Coolant density calculation for a single boiling channel.''';
     def __init__(self, cellNumbers, cellNumber2PreviousMassDensity, cellNumber2MassDensity, axialPowers, axialQualitys, axialVoidFractions, finePositionCPRs, minimumCriticalPowerRatio, minimumCriticalPowerRatioQuality, minimumCriticalPowerRatioLocation, criticalPowerRatioLimit, flowLengths, axialPressureDrops, transportOutputFile):
+        '''Construct a new instance.''';
         self.cellNumbers = cellNumbers;
         self.cellNumber2PreviousMassDensity = cellNumber2PreviousMassDensity;
         self.cellNumber2MassDensity = cellNumber2MassDensity;
@@ -63,6 +65,7 @@ class BoilingCalculation:
         return;
     ###
     def __str__(self):
+        '''Return summary string.''';
         lines = ['< Void fraction and pressure drop calculation outlet summary >'];
         ###
         attributeName = (
@@ -92,69 +95,91 @@ class BoilingCalculation:
         return '\n'.join('{:^59}'.format(line) for line in lines);
     ###
     def GetCellNumbers(self):
+        '''Return cell numbers.''';
         return self.cellNumbers;
     ###
     def GetCellNumberAccumulatedFlowLength(self, cellNumber):
+        '''Return accumulated active length of a cell.''';
         return sum(self.flowLengths[ : self.GetCellNumbers().index(cellNumber) + 1]);
     ###
     def GetCellNumberFlowLength(self, cellNumber):
+        '''Return active length of a cell.''';
         return self.flowLengths[self.GetCellNumbers().index(cellNumber)];
     ###
     def GetCellNumberPressureDrop(self, cellNumber):
+        '''Return pressure drop over a cell.''';
         return self.cellNumber2PressureDrop[cellNumber];
     ###
     def GetCellNumberPreviousMassDensity(self, cellNumber):
+        '''Return previous mass density for a cell.''';
         return self.cellNumber2PreviousMassDensity[cellNumber];
     ###
     def GetCellNumberThermalPower(self, cellNumber):
+        '''Return thermal power for a cell.''';
         return self.cellNumber2ThermalPower[cellNumber];
     ###
     def GetCellNumberLinearHeatRate(self, cellNumber):
+        '''Return linear heat rate for a cell.''';
         return self.GetCellNumberThermalPower(cellNumber) / self.GetCellNumberFlowLength(cellNumber) / 1e2;
     ###
     def GetCellNumberQuality(self, cellNumber):
+        '''Return quality for a cell.''';
         return self.cellNumber2Quality[cellNumber];
     ###
     def GetCellNumberVoidFraction(self, cellNumber):
+        '''Return void fraction for a cell.''';
         return self.cellNumber2VoidFraction[cellNumber];
     ###
     def GetCellNumberMassDensity(self, cellNumber):
+        '''Return current mass density for a cell.''';
         return self.cellNumber2MassDensity[cellNumber];
     ###
     def GetCriticalPowerRatioLimit(self):
+        '''Return critical power ratio limit.''';
         return self.criticalPowerRatioLimit;
     ###
     def GetFinePositionCPRs(self):
+        '''Return list of critical power ratios.''';
         return self.finePositionCPRs;
     ###
     def GetMinimumCriticalPowerRatio(self):
+        '''Return magnitude of minimum critical power ratio.''';
         return self.minimumCriticalPowerRatio;
     ###
     def GetMinimumCriticalPowerRatioLocation(self):
+        '''Return location of minimum critical power ratio.''';
         return self.minimumCriticalPowerRatioLocation;
     ###
     def GetMinimumCriticalPowerRatioQuality(self):
+        '''Return quality of minimum critical power ratio.''';
         return self.minimumCriticalPowerRatioQuality;
     ###
     def GetMultiplicationFactor(self):
+        '''Return multiplication factor.''';
         return self.multiplicationFactor;
     ###
     def GetMultiplicationFactorSigma(self):
+        '''Return multiplication factor standard deviation.''';
         return self.multiplicationFactorSigma;
     ###
     def GetPressureDrop(self):
+        '''Return total pressure drop.''';
         return self.GetCellNumberPressureDrop(self.GetOutletCellNumber());
     ###
     def GetOutletCellNumber(self):
+        '''Return outlet cell number.''';
         return self.GetCellNumbers()[-1];
     ###
     def GetUpdateCellNumbers(self):
+        '''Return cells to be updated.''';
         return [cellNumber for cellNumber in self.cellNumber2MassDensity];
 ###
 # Steam thermodynamic properties
 ###
 class Steam:
+    '''Steam thermodynamic properties.''';
     def __init__(self, pressure, temperature, massFlowRate, heatedDiameter, hydraulicDiameter, flowArea):
+        '''Construct a new instance.''';
         ###
         # Import IAPWS97 steam properties library
         ###
@@ -229,6 +254,7 @@ class Steam:
         return;
     ###
     def __str__(self):
+        '''Return summary string.''';
         lines = ['< Steam thermodynamic properties summary >'];
         ###
         attributeName = (
@@ -265,6 +291,7 @@ class Steam:
 # Library-specific MocDown input parameters
 ###
 def GetLibraryParametersConverters(self):
+    '''Return default values and parsing functions for RBWR-Th parameters.''';
     ###
     # Default parameter values
     ###
@@ -356,6 +383,7 @@ def GetLibraryParametersConverters(self):
 # RBWR-Th recycling scheme
 ###
 def RbwrThRecycle(bocTransportFile, eocTransportFile):
+    '''Override fuel processing.''';
     ###
     # Hard code the blanket and seed cell parameters
     ###
@@ -500,6 +528,7 @@ def RbwrThRecycle(bocTransportFile, eocTransportFile):
 # Polynomial interpolation
 ###
 def PolynomialInterpolation(x, xp, yp, order):
+    '''Perform polynomial interpolation.''';
     from numpy import polyfit, polyval;
     ###
     return polyval(polyfit(xp, yp, order), x);
@@ -507,6 +536,7 @@ def PolynomialInterpolation(x, xp, yp, order):
 # Multi-batch core keff @ EOC
 ###
 def MultiBatchCoreKeffEoc(self):
+    '''Return batch-averaged EOC multiplication factor.''';
     ###
     # Extract coarse times, keffs, and powers
     ###
@@ -528,6 +558,7 @@ def MultiBatchCoreKeffEoc(self):
 # Multi-batch harmonic mean
 ###
 def MultiBatchHarmonicMean(times, values, order = 4, weights = None, timeSteps = 500, batches = 5):
+    '''Perform a harmonic mean for a time-series.''';
     ###
     # If not provided, assume equal power fractions between batches
     ###
@@ -554,6 +585,7 @@ MultiBatchCoreKeff = MultiBatchHarmonicMean;
 # Multi-batch core keff @ EOC, with varied cycle lengths
 ###
 def MultiBatchCoreKeffEocCycleStretch(times, values, order = 4, minimum = 0., maximum = 2., number = 500):
+    '''Return batch-averaged EOC multiplication factors for many batch lengths.''';
     ###
     # Linear interpolation/extrapolation
     ###
@@ -601,12 +633,14 @@ def MultiBatchCoreKeffEocCycleStretch(times, values, order = 4, minimum = 0., ma
 # Generic void fraction correlation (Carey, p.512)
 ###
 def VoidFractionGeneric(x, rhol, rhov, mul, muv, Bb, n1, n2, n3):
+    '''Retrurn generic void fraction correlation (Carey, p.512).''';
     ###
     return 1 / (1 + Bb * ((1 - x) / x) ** n1 * (rhov / rhol) ** n2 * (mul / muv) ** n3);
 ###
 # Homogeneous void fraction correlation (Carey, p.512)
 ###
 def VoidFractionHomogeneous(steam, quality):
+    '''Perform homogeneous void fraction correlation (Carey, p.512).''';
     ###
     # Extract steam properties
     ###
@@ -621,6 +655,7 @@ def VoidFractionHomogeneous(steam, quality):
 # Zivi void fraction correlation (Carey, p.512)
 ###
 def VoidFractionZivi(steam, quality):
+    '''Perform Zivi void fraction correlation (Carey, p.512).''';
     ###
     # Extract steam properties
     ###
@@ -635,6 +670,7 @@ def VoidFractionZivi(steam, quality):
 # Wallis void fraction correlation (Carey, p.512)
 ###
 def VoidFractionWallis(steam, quality):
+    '''Perform Wallis void fraction correlation (Carey, p.512).''';
     ###
     # Extract steam properties
     ###
@@ -649,6 +685,7 @@ def VoidFractionWallis(steam, quality):
 # Lockhart and Martinelli void fraction correlation (Carey, p.512)
 ###
 def VoidFractionLM(steam, quality):
+    '''Perform Lockhart and Martinelli void fraction correlation (Carey, p.512).''';
     ###
     # Extract steam properties
     ###
@@ -663,6 +700,7 @@ def VoidFractionLM(steam, quality):
 # Thom void fraction correlation (Carey, p.512)
 ###
 def VoidFractionThom(steam, quality):
+    '''Perform Thom void fraction correlation (Carey, p.512).''';
     ###
     # Extract steam properties
     ###
@@ -677,6 +715,7 @@ def VoidFractionThom(steam, quality):
 # Baroczy void fraction correlation (Carey, p.512)
 ###
 def VoidFractionBaroczy(steam, quality):
+    '''Perform Baroczy void fraction correlation (Carey, p.512).''';
     ###
     # Extract steam properties
     ###
@@ -691,12 +730,14 @@ def VoidFractionBaroczy(steam, quality):
 # Generic drift-flux void fraction correlation
 ###
 def VoidFractionDriftFlux(x, rhol, rhov, G, C0, Vvj):
+    '''Perform generic drift-flux void fraction correlation.''';
     ###
     return 1 / (C0 * (1 + (1 - x) / x * rhov / rhol) + Vvj * rhov / x / G);
 ###
 # Bestion void fraction correlation
 ###
 def VoidFractionBestion(steam, quality):
+    '''Perform Bestion void fraction correlation.''';
     ###
     # Extract steam properties
     ###
@@ -725,6 +766,7 @@ def VoidFractionBestion(steam, quality):
 # Liao/Parlos/Griffith (LPG) void fraction correlation
 ###
 def VoidFractionLPG(steam, quality):
+    '''Peform Liao/Parlos/Griffith (LPG) void fraction correlation.''';
     ###
     # Extract steam properties
     ###
@@ -815,6 +857,7 @@ def VoidFractionLPG(steam, quality):
 # Chexal-Lellouche void fraction correlation
 ###
 def VoidFractionChexalLellouche(steam, quality):
+    '''Perform Chexal-Lellouche void fraction correlation.''';
     ###
     # Extract steam properties
     ###
@@ -895,6 +938,7 @@ VoidFractionRELAP = VoidFractionChexalLellouche;
 # MIT-modified CISE-4 critical power ratio correlation
 ###
 def CriticalPowerRatioMITCISE4(steam, axialPowers, flowLengths, endIndex):
+    '''Perform MIT-modified CISE-4 critical power ratio correlation.''';
     ###
     # Extract steam properties
     ###
@@ -975,6 +1019,7 @@ def CriticalPowerRatioMITCISE4(steam, axialPowers, flowLengths, endIndex):
 # Generic two-phase pressure drop correlation
 ###
 def PressureDropTwoPhase(steam, quality, voidFraction, massDensity, flowLengths, twoPhaseFrictionMultiplier):
+    '''Perform generic two-phase pressure drop correlation.''';
     ###
     # Extract steam properties
     ###
@@ -1017,6 +1062,7 @@ def PressureDropTwoPhase(steam, quality, voidFraction, massDensity, flowLengths,
 # EPRI two-phase friction multiplier correlation
 ###
 def PressureDropEPRI(steam, quality, voidFraction, massDensity, flowLengths):
+    '''EPRI pressure drop correlation.''';
     ###
     # Extract steam properties
     ###
@@ -1040,6 +1086,7 @@ def PressureDropEPRI(steam, quality, voidFraction, massDensity, flowLengths):
 # RBWR-Th boiling calculation
 ###
 def RbwrThBoilingCalculation(self, transportOutputFile):
+    '''Override coolant density calculation.''';
     ###
     # Kick out if density updates are not requested
     ###
@@ -1316,6 +1363,7 @@ UpdateCoolantDensitys = RbwrThBoilingCalculation;
 # Coolant density calculation
 ### # FIXME Implement this?  We will probably have to strip out the meat of RbwrThBoilingCalculation and point to that
 def UpdateCoolantDensitysOffline():
+    '''Offline coolant density update helper.''';
     UpdateCoolantDensitys;
     ###
     return;
@@ -1323,6 +1371,7 @@ def UpdateCoolantDensitysOffline():
 # Process fuel
 ###
 def ProcessFuelOffline(bocFileName, eocFileName, newFileName):
+    '''Offline fuel processing helper.''';
     newInputFile = RbwrThRecycle(McnpInputFile(bocFileName), McnpInputFile(eocFileName));
     ###
     WriteFile(newFileName, newInputFile.GetNewputRaw());

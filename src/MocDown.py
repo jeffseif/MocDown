@@ -6,16 +6,18 @@ __version__ = '1.0';
 __year__ = '2013';
 
 ###
-### Standard library imports
+### Imports
 ###
 
+###
+# Standard library
+###
 from argparse import ArgumentParser;
 from concurrent import futures as Futures;
 from csv import reader as CsvReader,\
                 writer as CsvWriter;
 from glob import glob as Glob;
 from gzip import open as GzipOpen;
-from math import pi as pi;
 from numpy import array as Array,\
                   concatenate as Concatenate,\
                   diff as Difference,\
@@ -51,35 +53,30 @@ from sys import modules as Modules,\
                 stdout as StdOut;
 from tempfile import mkdtemp as LibMakeTemporaryDirectory;
 from time import sleep as Sleep;
-
 ###
-### Physical constants (http://physics.nist.gov/cuu/Constants/Table/allascii.txt)
+# Physical constants
 ###
-
+from scipy.constants import day as secondsPerDay,\
+                            eV as joulePerEv,\
+                            Julian_year as secondsPerYear,\
+                            k as boltzmannsConstant,\
+                            m_u as kgPerAmu,\
+                            m_n as neutronMass,\
+                            N_A as avogadrosNumber,\
+                            pi as pi;
 ###
-# Avogadro's number * cm² / barns [cm² / b · mol]
+avogadrosNumber /= 1e24;
 ###
-avogadrosNumber = 6.02214129e23 / 1e24;
+neutronMass /= kgPerAmu;
+del kgPerAmu;
 ###
-# Atomic mass constant energy equivalent
-###
-mevPerCSquaredPerAmu = 931.494061;
-###
-# Boltzmann's constant [J / K]
-###
-boltzmannsConstant = 1.3806488e-23;
-###
-# Neutron mass [atomic mass units]
-###
-neutronMass = 1.00866491600;
-###
-# Unit conversions
-###
-joulePerMev = 1.602176565e-13;
+joulePerMev = joulePerEv / 1e6;
 mevPerJoule = 1. / joulePerMev;
-mevPerKelvin = boltzmannsConstant * mevPerJoule;
-kelvinPerMev = 1. / mevPerKelvin;
-daysPerYear = 365.242;
+kelvinPerMev = 1. / boltzmannsConstant / mevPerJoule;
+del(joulePerEv);
+###
+daysPerYear = secondsPerYear / secondsPerDay;
+del(secondsPerDay, secondsPerYear);
 
 ###
 ### Constants
@@ -154,27 +151,34 @@ reNumber = ReCompile(r'[0-9]+', 2 | 8);
 ###
 ###
 class Coordinate:
+    '''Contain an abscissa and ordinate.''';
     def __init__(self, x, y):
+        '''Construct a new instance.''';
         self.x = x;
         self.y = y;
         ###
         return;
     ###
     def GetX(self):
+        '''Return abscissa.''';
         return self.x;
     ###
     def GetY(self):
+        '''Return ordinate.''';
         return self.y;
 ###
 # Empty Class
 ###
 class Class:
+    '''Empty class.''';
     pass;
 ###
 # Depletion calculation
 ###
 class DepletionCalculation:
+    '''Depletion calculation, held in memory during operation.''';
     def __init__(self, arguments, isPickleTransmute = False):
+        '''Construct a new instance.''';
         ###
         # Set argument attributes
         ###
@@ -203,38 +207,47 @@ class DepletionCalculation:
         return;
     ###
     def __len__(self):
+        '''Return number of depletion steps.''';
         return len(mocDownInputFile);
     ###
     # Generic getter methods
     ###
     def GetArguments(self):
+        '''Return MocDown.py input arguments.''';
         return self.arguments;
     ###
     def GetBurnCells(self):
+        '''Return cells which are depleted.''';
         return self.GetParameter('burnCells');
     ###
     def GetBurnMode(self):
+        '''Return ORIGEN2 string for flux or power mode.''';
         return ['IRF', 'IRP'][self.GetParameter('isPowerMode')];
     ###
     def GetBurnRate(self):
+        '''Return system total flux or power for current depletion step.''';
         if self.GetParameter('isPowerMode'):
             return self.GetDepletionStepPower();
         else:
             return self.GetDepletionStepFlux();
     ###
     def GetCellNumberBurnRate(self, cellNumber):
+        '''Return cell flux or power for current depletion step.''';
         return self.GetCellNumber2BurnRate()[cellNumber];
     ###
     def GetCellNumber2BurnRate(self):
+        '''Return dictionary mapping cell to flux or power for current depletion step.''';
         return self.cellNumber2BurnRate;
     ###
     def GetCellNumberDecayPower(self, cellNumber, offset = 0):
+        '''Return cell decay power for current depletion step.''';
         try:
             return self.depletionStep2CellNumber2DecayPower[self.GetDepletionStep(offset)][cellNumber];
         except KeyError:
             return 0;
     ###
     def GetCellNumberThermalPower(self, transportOutputFile, cellNumber, includeDecayHeat = True):
+        '''Return cell thermal power for current depletion step.''';
         if transportOutputFile.GetIsCoupled():
             ###
             # This is a coupled neutron/photon transport calculation;
@@ -256,54 +269,70 @@ class DepletionCalculation:
         return thermalPower;
     ###
     def GetCellNumber2Micros(self):
+        '''Return dictionary mapping cell to one-group microscopic cross-sections for current depletion step.''';
         return self.cellNumber2Micros;
     ###
     def GetCellNumber2OrigenCalculation(self):
+        '''Return cell ORIGEN calculuation for current depletion step.''';
         return self.cellNumber2OrigenCalculation;
     ###
     def GetCellNumber2Zam2Moles(self):
+        '''Return dictionary mapping cell to isotope to moles for current depletion step.''';
         return self.cellNumber2Zam2Moles;
     ###
     def GetCoolantDensityCalculations(self):
+        '''Return cell coolant density calculuations for current depletion step.''';
         return self.coolantDensityCalculations;
     ###
     def GetDefaultDecayLibrary(self):
+        '''Return ORIGEN2 default decay library.''';
         return self.defaultDecayLibrary;
     ###
     def GetDefaultPhotonLibrary(self):
+        '''Return ORIGEN2 default photon library.''';
         return self.defaultPhotonLibrary;
     ###
     def GetDefaultXsLibrary(self):
+        '''Return ORIGEN2 default one-group microscopic cross-section library.''';
         return self.defaultXsLibrary;
     ###
     def GetDepletionCalculationPickle(self):
+        '''Return depletion I/O object for entire calculation.''';
         return self.depletionCalculationPickle;
     ###
     def GetDepletionStepFlux(self):
+        '''Return system total flux for current depletion step.''';
         return self.GetParameter('depletionStepFluxes')[self.GetDepletionStep()];
     ###
     def GetDepletionStepPickle(self, offset = 0):
+        '''Return depletion I/O object for current step.''';
         try:
             return self.depletionStep2DepletionStepPickle[self.GetDepletionStep(offset)];
         except KeyError:
             return None;
     ###
     def GetDepletionStepPower(self):
+        '''Return system total power for current depletion step.''';
         return self.GetParameter('depletionStepPowers')[self.GetDepletionStep()];
     ###
     def GetDepletionStepTimeInterval(self):
+        '''Return time duration of current depletion step.''';
         return self.GetParameter('depletionStepTimeIntervals')[self.GetDepletionStep()];
     ###
     def GetDepletionStep(self, offset = 0):
+        '''Return index of current depletion step.''';
         return self.depletionStep + offset;
     ###
     def GetDepletionString(self):
+        '''Return string for current depletion step.''';
         return 'DS #{:d} of {:d}'.format(self.GetDepletionStep(), len(self));
     ###
     def GetEitherUpdate(self):
+        '''Return if coolant densities or fuel temperatures are coupled.''';
         return self.GetParameter('updateCoolantDensities') or self.GetParameter('updateFuelTemperatures');
     ###
     def GetFileName(self, extension = None, withoutTH = False):
+        '''Return MCNP input filename for current depletion step.''';
         fileName = self.GetOriginalTransportFile().GetNewputFileName(self.GetDepletionStep());
         if self.GetEitherUpdate() and not withoutTH:
             fileName += '-{:d}'.format(self.GetTransportIteration());
@@ -314,92 +343,119 @@ class DepletionCalculation:
         return fileName;
     ###
     def GetFuelTemperatureCalculations(self):
+        '''Return cell fuel temperature calculuations for current depletion step.''';
         return self.fuelTemperatureCalculations;
     ###
     def GetDisplayFiles(self):
+        '''Return if file operations are verbose.''';
         return not bool(self.GetArguments().isQuiet);
     ###
     def GetForceDecayTransport(self):
+        '''Return if transport is to be performed even when it is not needed for transmutation.''';
         return self.GetParameter('forceDecayTransport');
     ###
     def GetIncludeDecayHeat(self):
+        '''Return if decay heat is to be considered.''';
         return self.GetParameter('includeDecayHeat');
     ###
     def GetIsDecayStep(self):
+        '''Return if current depletion step entails decay.''';
         return (self.GetParameter('isPowerMode') and 0 == self.GetDepletionStepPower()) or (not self.GetParameter('isPowerMode') and 0 == self.GetDepletionStepFlux());
     ###
     def GetIsLesserMcnp(self):
+        '''Return if MCNP version is 5.1.51 or earlier.''';
         ###
         # This is specific to the berkelium.nuc.berkeley.edu and hopper.nersc.gov clusters (circa November, 2012)!
         ###
         return all(dir not in self.GetParameter('mcnpExecutablePath') for dir in ('MCNP5-1.60', 'MCNP6', 'MCNPX', 'm1537'));
     ###
     def GetIsOrigen2(self):
+        '''Return if ORIGEN version is 2.2.''';
         return any(executable in self.GetParameter('origenExecutablePath') for executable in ('o2_fast', 'o2_thermal'));
     ###
     def GetIsPickleTransmute(self):
+        '''Return if current depletion step is to be transmuted using pickles.''';
         return self.isPickleTransmute;
     ###
     def GetIsRestart(self):
+        '''Return if current depletion step is in restart mode.''';
         return bool(self.GetArguments().isRestart);
     ###
     def GetIsVerbose(self):
+        '''Return if warnings are verbose.''';
         return bool(self.GetArguments().isVerbose);
     ###
     def GetLibZams(self, lib):
+        '''Return isotopes present in a ORIGEN2 sub-library.''';
         return self.GetLib2Zams()[lib];
     ###
     def GetLib2Zams(self):
+        '''Return dictionary mapping ORIGEN2 sub-library to its isotopes present.''';
         return self.lib2Zams;
     ###
     def GetLibZamExcite(self, lib, zam):
+        '''Return excited fraction states for isotope of a ORIGEN2 sublibrary.''';
         return self.lib2Zam2Excite[lib][zam];
     ###
     def GetMaterialNumberZaid(self, materialNumber):
+        '''Return isotope for a single-isotope material.''';
         return self.GetMaterialNumber2Zaid()[materialNumber];
     ###
     def GetMaterialNumber2Zaid(self):
+        '''Return dictionary mapping single-isotope material to isotope.''';
         return self.materialNumber2Zaid;
     ###
     def GetTransmuteTallyNumber(self):
+        '''Return MCNP tally number used for transmutation constants.''';
         return self.transmuteTallyNumber;
     ###
     def GetOrigen2LibMts(self, lib):
+        '''Return ORIGEN2 sub-library MT #s.''';
         return self.GetOrigen2Lib2Mts()[lib % 10];
     ###
     def GetOrigen2Lib2Mts(self):
+        '''Return dictionary mapping ORIGEN2 sub-library to MT #s.''';
         return self.origen2Lib2Mts;
     ###
     def GetOriginalTransportFile(self):
+        '''Return object for initial MCNP input file.''';
         return self.originalTransportFile;
     ###
     def GetParameter(self, key):
+        '''Return mocdown input file parameter for a key.''';
         return self.GetParameters()[key];
     ###
     def GetParameters(self):
+        '''Return mocdown input file parameters.''';
         return mocDownInputFile.GetParameters();
     ###
     def GetPreviousCoolantDensityCalculations(self):
+        '''Return previously performed coolant density calculations.''';
         return self.previousCoolantDensityCalculations;
     ###
     def GetPreviousFuelTemperatureCalculations(self):
+        '''Return previously performed fuel temperature calculations.''';
         return self.previousFuelTemperatureCalculations;
     ###
     def GetTransportIteration(self):
+        '''Return index of transport iterations.''';
         if not hasattr(self, 'transportIteration'):
             self.transportIteration = 0;
         ###
         return self.transportIteration;
     ###
     def GetXsDirZaids(self):
+        '''Return list of isotopes present in MCNP xsdir.''';
         return self.xsDirZaids;
     ###
     def GetZa2WattsPerMole(self):
+        '''Return dictionarty mapping isotope to its decay heat per mole.''';
         return self.za2WattsPerMole;
     ###
     # Depletion methods
     ###
     def PopulateDepletionSteps(self):
+        '''Populate derived depletion parameters.''';
         ###
         # Populate depletion step time intervals, fluxes, and powers if the total depletion time is provided
         ###
@@ -515,6 +571,7 @@ class DepletionCalculation:
         return;
     ###
     def Deplete(self):
+        '''Execute MocDown depletion.''';
         PrintNow('> {} will perform {} depletion step(s)'.format(__file__, len(self)));
         ###
         # Prepare depletion
@@ -587,6 +644,7 @@ class DepletionCalculation:
         return;
     ###
     def PrepareDepletion(self):
+        '''Populate default depletion parameters.''';
         ###
         # Set depletion step
         ###
@@ -681,6 +739,7 @@ class DepletionCalculation:
         return;
     ###
     def TryUnpickle(self):
+        '''Attempt to read a pickle file for current depletion step.''';
         ###
         # If a restart is requested, attempt to load the depletion step pickle;
         # If the pickle doesn't exist, fail to as if the restart was not requested (for that depletion step)
@@ -702,6 +761,7 @@ class DepletionCalculation:
         return;
     ###
     def TransportConvergence(self):
+        '''Iterate transport calculations until convergence for current depletion step.''';
         transportFile = None;
         ###
         # Archive the most relevant coolant density calculation:
@@ -773,6 +833,7 @@ class DepletionCalculation:
         return transportFile;
     ###
     def PrepareTransport(self, transportFile = None):
+        '''Write MCNP input file for current depletion step.''';
         PrintNow('> Writing MCNP input for {}{}'.format(self.GetDepletionString(), ['', '; transport iteration #{:d}'.format(self.GetTransportIteration())][self.GetTransportIteration() > 0]));
         ###
         # If this is the first transport iteration, then grab the original transport input file;
@@ -967,6 +1028,7 @@ class DepletionCalculation:
         return;
     ###
     def Transport(self):
+        '''Execute transport.''';
         ###
         # Ensure necessary files do/don't exist
         ###
@@ -974,7 +1036,7 @@ class DepletionCalculation:
         for extension in ('o', 'src', 'tpe'):
             RemoveFile(self.GetFileName(extension), display = self.GetDisplayFiles());
         ###
-        # Maybe copy mcnp source to .src
+        # Maybe copy MCNP source to .src
         ###
         sourceFileName = self.GetParameter('mcnpSourceFileName');
         if Exists(sourceFileName):
@@ -1030,6 +1092,7 @@ class DepletionCalculation:
             return transportOutputFile;
     ###
     def UpdateCoolantDensitys(self, transportOutputFile):
+        '''Dummy coolant density calculation.''';
         ###
         # Kick out if density updates are not requested
         ###
@@ -1044,6 +1107,7 @@ class DepletionCalculation:
         return;
     ###
     def UpdateFuelTemperatures(self, transportOutputFile):
+        '''Dummy fuel temperature calculation.''';
         ###
         # Kick out if temperatures updates are not requested
         ###
@@ -1058,11 +1122,13 @@ class DepletionCalculation:
         return;
     ###
     def IncrementTransportIteration(self):
+        '''Increment index of transport iterations.''';
         self.transportIteration += 1;
         ###
         return;
     ###
     def ResetTransportIteration(self):
+        '''Reset index of transport iterations.''';
         ###
         if self.GetEitherUpdate():
             PrintNow('> Transport converged after {:d} iterations {}'.format(self.GetTransportIteration(), self.GetDepletionString()));
@@ -1085,6 +1151,7 @@ class DepletionCalculation:
         return;
     ###
     def TransmuteThreads(self, transportOutputFile, currentDir):
+        '''Execute transmute concurrently for each cell.''';
         ###
         # Kick out, if this is a transport-only simulation
         ###
@@ -1130,6 +1197,7 @@ class DepletionCalculation:
         return;
     ###
     def TransmuteThread(self, cellNumber, transportOutputFile, currentDir):
+        '''Execute transmute concurrently for a cell.''';
         ###
         # Find cell
         ###
@@ -1159,6 +1227,7 @@ class DepletionCalculation:
         return origenCalculation, zam2Moles, micros;
     ###
     def PrepareTransmute(self, transportOutputFile, cell, tmpDir = './'):
+        '''Prepare transmute calculation.''';
         PrintNow('> Writing transmute input for cell #{:d}'.format(cell.GetNumber()));
         ###
         # Extract cell #
@@ -1308,6 +1377,7 @@ class DepletionCalculation:
         return zam2Moles, micros;
     ###
     def Transmute(self, cell, tmpDir = './', currentDir = ''):
+        '''Execute ORIGEN2.''';
         PrintNow('> Burning cell #{:d} at {:10.5E} {:s} in `{:s}\''.format(cell.GetNumber(), self.GetCellNumberBurnRate(cell.GetNumber()), self.GetParameter('burnUnits'), tmpDir));
         ###
         # Ensure necessary files do/don't exist
@@ -1324,6 +1394,7 @@ class DepletionCalculation:
         return OrigenCalculation(cell.GetSuffix(), cell.GetVolume(), tmpDir);
     ###
     def PickleDepletionStep(self, transportOutputFile):
+        '''Serialized current depletion step.''';
         PrintNow('> Pickling {}'.format(self.GetDepletionString()));
         ###
         self.depletionStep2DepletionStepPickle[self.GetDepletionStep()] = DepletionStepPickle('{}.{}'.format(self.GetFileName(withoutTH = True), 'pkl'), transportOutputFile, self);
@@ -1331,6 +1402,7 @@ class DepletionCalculation:
         return;
     ###
     def UnpickleDepletionStep(self):
+        '''Un-serialized current depletion step.''';
         PrintNow('> Unpickling {}'.format(self.GetDepletionString()));
         ###
         extension = 'pkl';
@@ -1340,6 +1412,7 @@ class DepletionCalculation:
         return DepletionStepPickle('{}.{}'.format(self.GetFileName(withoutTH = True), extension));
     ###
     def CleanUpFiles(self, tmpDir = None):
+        '''Remove transmute files.''';
         if tmpDir is None:
             ###
             # Transport files
@@ -1362,23 +1435,29 @@ class DepletionCalculation:
         return;
     ###
     def IncrementDepletionStep(self):
+        '''Increment index for depletion step.''';
         self.depletionStep += 1;
         ###
         return;
     ###
     def ProcessFuel(self):
+        '''Dummy fuel processing.''';
         return None;
     ###
     def MultiplicationFactor(self):
+        '''Return characteristic multiplication factor.''';
         return [multiplicationFactor for multiplicationFactor in self.GetDepletionCalculationPickle().multiplicationFactors if multiplicationFactor is not None][-1];
     ###
     def MultiplicationFactorSigma(self):
+        '''Return characteristic multiplication factor standard deviation.''';
         return [multiplicationFactorSigma for multiplicationFactorSigma in self.GetDepletionCalculationPickle().multiplicationFactorSigmas if multiplicationFactorSigma is not None][-1];
 ###
 # Depletion calculation pickle
 ###
 class DepletionCalculationPickle:
+    '''Pickle for depletion calculation.''';
     def __init__(self, args):
+        '''Construct a new instance.''';
         if isinstance(args, str):
             PrintNow('> Unpickling depletion calculation');
             ###
@@ -1543,9 +1622,11 @@ class DepletionCalculationPickle:
         return;
     ###
     def __len__(self):
+        '''Return number of depletion steps.''';
         return len(self.GetParameter('depletionStepTimeIntervals')) + 1;
     ###
     def Save(self, baseName, display):
+        '''Save to file.''';
         ###
         # Pickle;
         # Maybe gzip
@@ -1569,67 +1650,87 @@ class DepletionCalculationPickle:
     # Generic getter methods
     ###
     def GetBurnCells(self):
+        '''Return cells which are depleted.''';
         return self.GetParameter('burnCells');
     ###
     def GetCellNumberVolume(self, cellNumber):
+        '''Return volume of a cell.''';
         return self.cellNumber2Volume[cellNumber];
     ###
     def GetDecayPowers(self):
+        '''Return list of system total decay powers.''';
         return [sum(decayPower for decayPowers in self.cellNumber2DecayPowers.values() for decayPower in [decayPowers[depletionStep]] if decayPower is not None) for depletionStep in range(len(self))];
     ###
     def GetDepletionStepTimeEnds(self):
+        '''Return start and end points of depletion steps.''';
         return self.GetParameter('depletionStepTimeEnds');
     ###
     def GetDepletionStepTimeIntervals(self):
+        '''Return durations of depletion steps.''';
         return self.GetParameter('depletionStepTimeIntervals');
     ###
     def GetFileName(self):
+        '''Return filename.''';
         return self.fileName;
     ###
     def GetFIMAs(self):
+        '''Return list of FIMAs.''';
         heavyMetalMoles = [sum(moles for cellNumber in self.GetBurnCells() for zam, moles in self.cellNumber2Zam2Moles[cellNumber][depletionStep].items() if ZaIsActinide(Zam2Za(zam))) for depletionStep in range(len(self))];
         ###
         return [1 - moles / heavyMetalMoles[0] for moles in heavyMetalMoles];
     ###
     def GetFissionPowers(self):
+        '''Return list of system total fission powers.''';
         return [sum(fissionPower for fissionPowers in self.cellNumber2FissionPowers.values() for fissionPower in [fissionPowers[depletionStep]] if fissionPower is not None) for depletionStep in range(len(self))];
     ###
     def GetMultiplicationFactors(self):
+        '''Return list of multiplication factors.''';
         return self.multiplicationFactors;
     ###
     def GetMultiplicationFactorSigmas(self):
+        '''Return list of multiplication factors standard deviations.''';
         return self.multiplicationFactorSigmas;
     ###
     def GetOrigenFluxes(self):
+        '''Return list of system total ORIGEN fluxes.''';
         cellNumber2Volume = self.cellNumber2Volume;
         return [sum(origenFlux * cellNumber2Volume[cellNumber] for cellNumber, origenFluxes in self.cellNumber2OrigenFluxes.items() for origenFlux in [origenFluxes[depletionStep]] if origenFlux is not None) / sum(cellNumber2Volume.values()) for depletionStep in range(len(self))];
     ###
     def GetOrigenPowers(self):
+        '''Return list of system total ORIGEN powers.''';
         return [sum(origenPower for origenPowers in self.cellNumber2OrigenPowers.values() for origenPower in [origenPowers[depletionStep]] if origenPower is not None) for depletionStep in range(len(self))];
     ###
     def GetPromptPowers(self):
+        '''Return list of system total prompt powers.''';
         return [sum(promptPower for promptPowers in self.cellNumber2PromptPowers.values() for promptPower in [promptPowers[depletionStep]] if promptPower is not None) for depletionStep in range(len(self))];
     ###
     def GetParameter(self, key):
+        '''Return mocdown input file parameter for a key.''';
         return self.GetParameters()[key];
     ###
     def GetParameters(self):
+        '''Return mocdown input file parameters.''';
         return self.parameters;
     ###
     def GetPowerCells(self):
+        '''Return list of cells which are dense enough to provide power.''';
         return self.powerCells;
     ###
     def GetScalarFluxes(self):
+        '''Return list of cells which might provide power.''';
         cellNumber2Volume = self.cellNumber2Volume;
         return [sum(scalarFlux * cellNumber2Volume[cellNumber] for cellNumber, scalarFluxes in self.cellNumber2ScalarFluxes.items() for scalarFlux in [scalarFluxes[depletionStep]] if scalarFlux is not None) / sum(cellNumber2Volume.values()) for depletionStep in range(len(self))];
     ###
     def GetSourceRates(self):
+        '''Return list of system total neutron source rates.''';
         return self.sourceRates;
     ###
     def GetThermalPowers(self):
+        '''Return list of system total thermal powers.''';
         return [sum(thermalPower for thermalPowers in self.cellNumber2ThermalPowers.values() for thermalPower in [thermalPowers[depletionStep]] if thermalPower is not None) for depletionStep in range(len(self))];
     ###
     def GetZa2Masses(self):
+        '''Get list of dictionaries mapping isotope to mass.''';
         za2Masses = [];
         for depletionStep in range(len(self)):
             za2Masses.append({});
@@ -1644,6 +1745,7 @@ class DepletionCalculationPickle:
         return za2Masses;
     ###
     def GetZa2Moles(self):
+        '''Get list of dictionaries mapping isotope to mole.''';
         za2Moles = [];
         for depletionStep in range(len(self)):
             za2Moles.append({});
@@ -1659,7 +1761,9 @@ class DepletionCalculationPickle:
 # Depletion step dump
 ###
 class DepletionStepPickle:
+    '''Pickle for depletion step.''';
     def __init__(self, *args):
+        '''Construct a new instance.''';
         if 3 == len(args):
             ###
             # Pickle data
@@ -1771,129 +1875,163 @@ class DepletionStepPickle:
     # Generic getter methods
     ###
     def GetBurnCells(self):
+        '''Return cells which are depleted.''';
         return self.GetParameter('burnCells');
     ###
     def GetCellNumberBurnRate(self, cellNumber):
+        '''Return cell flux or power for this depletion step.''';
         return self.cellNumber2BurnRate[cellNumber];
     ###
     def GetCellNumberDecayPower(self, cellNumber):
+        '''Return cell decay power for this depletion step.''';
         return self.GetCellNumber2DecayPower()[cellNumber];
     ###
     def GetCellNumber2DecayPower(self):
+        '''Return dictionary mapping cell to decay power for this depletion step.''';
         return self.cellNumber2DecayPower;
     ###
     def GetCellNumberFissionPower(self, cellNumber):
+        '''Return cell fission power for this depletion step.''';
         return self.cellNumber2FissionPower[cellNumber];
     ###
     def GetCellNumber2NextDecayPower(self):
+        '''Return dictionary mapping cell to decay power for next depletion step.''';
         return self.cellNumber2NextDecayPower;
     ###
     def GetCellNumberOrigenCalculation(self, cellNumber):
+        '''Return cell ORIGEN calculuation for this depletion step.''';
         return self.cellNumber2OrigenCalculation[cellNumber];
     ###
     def GetCellNumberOrigenFlux(self, cellNumber):
+        '''Return cell ORIGEN flux for this depletion step.''';
         return self.GetCellNumberOrigenCalculation(cellNumber).GetFlux();
     ###
     def GetCellNumberOrigenPower(self, cellNumber):
+        '''Return cell ORIGEN power for this depletion step.''';
         return self.GetCellNumberOrigenCalculation(cellNumber).GetPower();
     ###
     def GetCellNumberPromptPower(self, cellNumber):
+        '''Return cell prompt power for this depletion step.''';
         return self.cellNumber2PromptPower[cellNumber];
     ###
     def GetCellNumberMicros(self, cellNumber):
+        '''Return one-group microscopic cross-sections of a cell for this depletion step.''';
         return self.cellNumber2Micros[cellNumber];
     ###
     def GetCellNumberScalarFlux(self, cellNumber):
+        '''Return cell MCNP flux for this depletion step.''';
         return self.cellNumber2ScalarFlux[cellNumber];
     ###
     def GetCellNumberTAPE4(self, cellNumber):
+        '''Return ORIGEN TAPE4 of a cell for this depletion step.''';
         return self.GetCellNumberOrigenCalculation(cellNumber).GetTAPE4();
     ###
     def GetCellNumberTAPE5(self, cellNumber):
+        '''Return ORIGEN TAPE5 of a cell for this depletion step.''';
         return self.GetCellNumberOrigenCalculation(cellNumber).GetTAPE5();
     ###
     def GetCellNumberTAPE6(self, cellNumber):
+        '''Return ORIGEN TAPE6 of a cell for this depletion step.''';
         return self.GetCellNumberOrigenCalculation(cellNumber).GetTAPE6();
     ###
     def GetCellNumberTAPE7(self, cellNumber):
+        '''Return ORIGEN TAPE7 of a cell for this depletion step.''';
         return self.GetCellNumberOrigenCalculation(cellNumber).GetTAPE7();
     ###
     def GetCellNumberTAPE9(self, cellNumber):
+        '''Return ORIGEN TAPE9 of a cell for this depletion step.''';
         return self.GetCellNumberOrigenCalculation(cellNumber).GetTAPE9();
     ###
     def GetCellNumberTAPE10(self, cellNumber):
+        '''Return ORIGEN TAPE10 of a cell for the depletion step.''';
         return self.GetCellNumberOrigenCalculation(cellNumber).GetTAPE10();
     ###
     def GetCellNumberThermalPower(self, cellNumber):
+        '''Return cell thermal power for this depletion step.''';
         return self.cellNumber2ThermalPower[cellNumber];
     ###
     def GetCellNumberVolume(self, cellNumber):
+        '''Return cell volume.''';
         return self.cellNumber2Volume[cellNumber];
     ###
     def GetCellNumberZaid2NumberDensity(self, cellNumber):
+        '''Return dictionary mapping isotope to number density of a cell for this depletion step.''';
         return self.cellNumber2Zaid2NumberDensity[cellNumber];
     ###
     def GetCellNumberZaid2MassDensity(self, cellNumber):
+        '''Return dictionary mapping isotope to mass density of a cell for this depletion step.''';
         return self.cellNumber2Zaid2MassDensity[cellNumber];
     ###
     def GetCellNumberZam2Moles(self, cellNumber):
+        '''Return dictionary mapping isotope to moles of a cell for this depletion step.''';
         return self.cellNumber2Zam2Moles[cellNumber];
     ###
     def GetCoolantDensityCalculations(self):
+        '''Return cell coolant density calculuations for this depletion step.''';
         return self.coolantDensityCalculations;
     ###
     def GetDepletionStepTimeEnds(self):
+        '''Return start and end points of depletion steps.''';
         return self.GetParameter('depletionStepTimeEnds');
     ###
     def GetDepletionStepTimeIntervals(self):
+        '''Return durations of depletion steps.''';
         return self.GetParameter('depletionStepTimeIntervals');
     ###
     def GetFileName(self):
+        '''Return filename.''';
         return self.fileName;
     ###
     def GetFuelTemperatureCalculations(self):
+        '''Return cell fuel temperature calculuations for this depletion step.''';
         return self.fuelTemperatureCalculations;
     ###
     def GetParameter(self, key):
+        '''Return mocdown input file parameter for a key.''';
         return self.GetParameters()[key];
     ###
     def GetParameters(self):
+        '''Return mocdown input file parameters.''';
         return self.parameters;
     ###
     def GetMevPerFission(self):
+        '''Return effective MeV per fission for this depletion step.''';
         return self.mevPerFission;
     ###
     def GetMultiplicationFactor(self):
+        '''Return multiplication factor for this depletion step.''';
         return self.multiplicationFactor;
     ###
     def GetMultiplicationFactorSigma(self):
+        '''Return multiplication factor standard deviation for this depletion step.''';
         return self.multiplicationFactorSigma;
     ###
     def GetNeutronsPerFission(self):
+        '''Return effective neutrons per fission for this depletion step.''';
         return self.neutronsPerFission;
     ###
     def GetPowerCells(self):
+        '''Return list of cells which are dense enough to provide power.''';
         return self.powerCells;
     ###
     def GetTransportInputRaw(self):
+        '''Return text from MCNP output file for this depletion step.''';
         return self.transportInputRaw;
     ###
     def GetTransportOutputRaw(self):
+        '''Return text from MCNP input file for this depletion step.''';
         return self.transportOutputRaw;
     ###
     def GetSourceRate(self):
+        '''Return system total neutron source rate for this depletion step.''';
         return self.sourceRate;
-###
-# Fuel temperature calculation results
-###
-class FuelTemperatureCalculation:
-    def __init__(self):
-        return;
 ###
 # Material composition
 ###
 class MaterialComposition:
+    '''Derive compositions from arbitary isotopic mixtures.''';
     def __init__(self, materialDensity, isotope2Fraction):
+        '''Construct a new instance.''';
         fractionSum = sum(isotope2Fraction.values());
         ###
         # Determine if isotopes are expressed as isotope's or za's for molar mass lookup
@@ -2022,7 +2160,9 @@ class MaterialComposition:
 # MocDown input file
 ###
 class MocDownInputFile:
+    '''Parser for mocdown input file.''';
     def __init__(self, arguments):
+        '''Construct a new instance.''';
         self.fileName = None or hasattr(arguments, 'mocDownInputFileName') and arguments.mocDownInputFileName;
         ###
         # Maybe read file
@@ -2037,12 +2177,14 @@ class MocDownInputFile:
         return;
     ###
     def __len__(self):
+        '''Return number of depletion steps.''';
         if self.GetParameter('isPredictorMode'):
             return self.GetParameter('depletionStepTimeIntervals') * (self.GetParameter('numberOfPredictorSteps') + self.GetParameter('numberOfCorrectorSteps'));
         ###
         return len(self.GetParameter('depletionStepTimeIntervals'));
     ###
     def __str__(self):
+        '''Return summary string of parameters.''';
         lines = ['< MocDown input summary for `{}\' >'.format(self.GetFileName())];
         ###
         for key, value in sorted(self.GetParameters().items()):
@@ -2053,18 +2195,23 @@ class MocDownInputFile:
     # Generic getter methods
     ###
     def GetConverter(self, key):
+        '''Return parameter parser for a key.''';
         return self.GetConverters()[key];
     ###
     def GetConverters(self):
+        '''Return custom parameter parsers.''';
         return self.converters;
     ###
     def GetFileName(self):
+        '''Return filename.''';
         return self.fileName;
     ###
     def GetInputRaw(self):
+        '''Return text from file.''';
         return self.inputRaw;
     ###
     def GetKeyValueValues(self):
+        '''Parse and return key value pairs.''';
         reComments = ReCompile(r'\s*#.*', 2 | 8);
         for line in self.GetInputRaw().split('\n'):
             line = line.strip();
@@ -2090,14 +2237,17 @@ class MocDownInputFile:
             yield key, value, values;
     ###
     def GetParameter(self, key):
+        '''Return mocdown input file parameter for a key.''';
         return self.GetParameters()[key];
     ###
     def GetParameters(self):
+        '''Return mocdown input file parameters.''';
         return self.parameters;
     ###
     # Population methods
     ###
     def Populate(self):
+        '''Construct parameter mapping.''';
         ###
         # Default parameter values
         ###
@@ -2345,38 +2495,47 @@ class MocDownInputFile:
         return;
     ###
     def GetLibraryParametersConverters(self):
+        '''Return default values and parsing functions for custom parameters.''';
         return {}, {};
 ###
 # MCNP card
 ###
 class McnpCard:
+    '''A single card in an MCNP input file.''';
     def __init__(self, raw):
+        '''Construct a new instance.''';
         self.raw = raw;
         ###
         self.Populate();
         return;
     ###
     def __hash__(self):
+        '''Return number.''';
         return self.GetNumber();
     ###
     def __lt__(self, other):
+        '''Quantitatively compare similar instances.''';
         assert(isinstance(other, self.__class__));
         return self.GetNumber() < other.GetNumber();
     ###
     def __str__(self):
+        '''Return text.''';
         return self.GetRaw();
     ###
     # Generic getter methods
     ###
     def GetRaw(self):
+        '''Return text.''';
         return self.raw;
     ###
     def GetNumber(self):
+        '''Return number.''';
         return self.number;
     ###
     # Regular expression builder
     ###
     def GetRegex(self):
+        '''Return compiled regular expression for this instance.''';
         output = '\n' + self.GetRaw();
         ###
         # Escape special regex characters
@@ -2393,66 +2552,86 @@ class McnpCard:
     # Population methods
     ###
     def Populate(self):
+        '''Dummy method.''';
         return;
 ###
 # MCNP cell
 ###
 class McnpCell(McnpCard):
+    '''MCNP celsurface card.''';
     ###
     # Generic getter methods
     ###
     def GetFillUniverse(self):
+        '''Return universe which fills.''';
         return self.fillUniverse;
     ###
     def GetHeavyMetalMT(self):
+        '''Return metric tonnes of heavy metal.''';
         return self.GetMass() / 1e6 * sum(weightFraction for zaid, weightFraction in self.GetZaid2WeightFraction().items() if ZaIsActinide(Zaid2Za(zaid)));
     ###
     def GetImportance(self):
+        '''Return importance.''';
         return self.importance;
     ###
     def GetLatticeType(self):
+        '''Return lattice type.''';
         return self.latticeType;
     ###
     def GetMass(self):
+        '''Return grams.''';
         return self.GetMassDensity() * self.GetVolume();
     ###
     def GetMassDensity(self):
+        '''Return grams per cubic centimeter.''';
         return self.massDensity;
     ###
     def GetMaterialDensity(self):
+        '''Return grams per cubic centimeter or atoms per barn centimeter.''';
         return self.materialDensity;
     ###
     def GetMaterialDensityRegex(self):
+        '''Return compiled material density regular expression.''';
         return self.materialDensityRegex;
     ###
     def GetMaterialNumber(self):
+        '''Return material number.''';
         return self.materialNumber;
     ###
     def GetMoles(self):
+        '''Return moles.''';
         return self.numberDensity * self.GetVolume() / avogadrosNumber;
     ###
     def GetNumberDensity(self):
+        '''Return atoms per barn centimeter.''';
         return self.numberDensity;
     ###
     def GetSuffix(self):
+        '''Return most prominent nuclear library suffix.''';
         return self.suffix;
     ###
     def GetSurfaceNumbers(self):
+        '''Return list of surface numbers.''';
         return self.surfaceNumbers;
     ###
     def GetTemperature(self):
+        '''Return MeV.''';
         return self.temperature;
     ###
     def GetTemperatureRegex(self):
+        '''Return compiled temperature regular expression.''';
         return self.temperatureRegex;
     ###
     def GetUniverse(self):
+        '''Return universe.''';
         return self.universe;
     ###
     def GetVolume(self):
+        '''Return cubic centimeters.''';
         return self.volume;
     ###
     def GetZa2Moles(self):
+        '''Return dictionary mapping isotope to moles.''';
         volume = self.GetVolume();
         za2Moles = {};
         for zaid, numberDensity in self.GetZaid2NumberDensity().items():
@@ -2467,35 +2646,45 @@ class McnpCell(McnpCard):
         return za2Moles;
     ###
     def GetZaid2AtomFraction(self):
+        '''Return dictionary mapping isotope to atom fraction.''';
         return self.zaid2AtomFraction;
     ###
     def GetZaidMass(self, zaid):
+        '''Return grams for an isotope.''';
         return self.GetZaidMassDensity(zaid) * self.GetVolume();
     ###
     def GetZaidMassDensity(self, zaid):
+        '''Return grams per cubic centimeter for an isotope.''';
         return self.GetZaid2MassDensity()[zaid];
     ###
     def GetZaid2MassDensity(self):
+        '''Return dictionary mapping isotope to grams per cubic centimeter.''';
         return self.zaid2MassDensity;
     ###
     def GetZaidMoles(self, zaid):
+        '''Return moles for an isotope.''';
         return self.GetZaidNumberDensity(zaid) * self.GetVolume() / avogadrosNumber;
     ###
     def GetZaidNumberDensity(self, zaid):
+        '''Return atoms per barn centimeter for an isotope.''';
         return self.GetZaid2NumberDensity()[zaid];
     ###
     def GetZaid2NumberDensity(self):
+        '''Return dictionary mapping isotope to atoms per barn centimeter.''';
         return self.zaid2NumberDensity;
     ###
     def GetZaid2WeightFraction(self):
+        '''Return dictionary mapping isotope to weight fraction.''';
         return self.zaid2WeightFraction;
     ###
     def GetZaids(self):
+        '''Return list of isotopes.''';
         return sorted(self.zaid2AtomFraction);
     ###
     # Population methods
     ###
     def Populate(self):
+        '''Populate.''';
         cellNumber, materialNumber, materialDensity, surfaceNumbers, junk, parameters, junk = ReCompile(r'^(\d{1,8}\s+)(\d{1,8}\s+)([\d\.e+\-]+\s+)?((:?[+\-]?\d{1,8}\s*)*)((.|\n)+)$', 2 | 8).search(self.GetRaw()).groups();
         ###
         # cell number, material number, material density, surface numbers, material density regex
@@ -2568,15 +2757,18 @@ class McnpCell(McnpCard):
 # MCNP surface
 ###
 class McnpSurface(McnpCard):
+    '''MCNP surface card.''';
     ###
     # Generic getter methods
     ###
     def GetMnemonic(self):
+        '''Return surface type mnemonic.''';
         return self.mnemonic;
     ###
     # Population methods
     ###
     def Populate(self):
+        '''Populate.''';
         surfaceNumber, transformationNumber, mnemonic, parameters = ReCompile(r'^[+\*]?(\d{1,8}\s+)([+\-]?\d{1,3}\s+)?([psckgthr][ep/]?[oxyzqp]?\s+)(.+)$', 2 | 8).search(self.GetRaw()).groups();
         ###
         # surface number, transformation number, mnemonic
@@ -2595,29 +2787,37 @@ class McnpSurface(McnpCard):
 # MCNP material
 ###
 class McnpMaterial(McnpCard):
+    '''MCNP material card.''';
     def __len__(self):
+        '''Return number of isotopes.''';
         return len(self.GetZaid2Fraction());
     ###
     # Generic getter methods
     ###
     def GetIsSingleIsotope(self):
+        '''Return if only one isotope is contained.''';
         return len(self) == 1;
     ###
     def GetZa(self, index = 0):
+        '''Return first isotope.''';
         return self.GetZas()[index];
     ###
     def GetZas(self):
+        '''Return list of isotopes.''';
         return self.zas;
     ###
     def GetZaids(self):
+        '''Return list of isotopes.''';
         return self.GetZaid2Fraction().keys();
     ###
     def GetZaid2Fraction(self):
+        '''Return dictionary mapping isotope to abundance.''';
         return self.zaid2Fraction;
     ###
     # Population methods
     ###
     def Populate(self):
+        '''Populate.''';
         card = [word for word in self.GetRaw().split()];
         materialNumber = card[0].lower().strip('m');
         self.number = int(float(materialNumber));
@@ -2629,7 +2829,9 @@ class McnpMaterial(McnpCard):
 # MCNP tally
 ###
 class McnpTally(McnpCard):
+    '''MCNP generic tally card.''';
     def __contains__(self, other):
+        '''Return if particle, tally tag, or space is contained.''';
         if isinstance(other, str):
             return any(particle in other for particle in self.GetParticles());
         ###
@@ -2642,26 +2844,33 @@ class McnpTally(McnpCard):
         return other.GetNumber() in self.GetSpaces();
     ###
     def __len__(self):
+        '''Return number of spaces.''';
         return len(self.GetSpaces());
     ###
     # Generic getter methods
     ###
     def GetEnergys(self):
+        '''Return energy bins.''';
         return self.energys;
     ###
     def GetParticles(self):
+        '''Return particles.''';
         return self.particles;
     ###
     def GetResultString(self):
+        '''Return result text.''';
         return self.resultString;
     ###
     def GetMnemonic(self):
+        '''Return tally type mnemonic.''';
         return self.mnemonic;
     ###
     def GetSpaces(self):
+        '''Return list of spaces.''';
         return self.spaces;
     ###
     def GetSpaceType(self):
+        '''Return surface or cell, according to tally type mnemonic.''';
         if self.GetMnemonic() in ('f1', 'f2'):
             return 'surface';
         else:
@@ -2670,6 +2879,7 @@ class McnpTally(McnpCard):
     # Physical quantity getter methods
     ###
     def GetTallyResults(self, *args):
+        '''Return an indexed tally result.''';
         ###
         # Tally-type-specific indicies (space, angle, multiplier bin)
         ###
@@ -2692,16 +2902,19 @@ class McnpTally(McnpCard):
     # Population methods
     ###
     def Populate(self):
+        '''Populate input-related metrics.''';
         self.PopulateGenerics();
         ###
         return;
     ###
     def PopulateAngles(self, angles):
+        '''Attach angle bins.''';
         self.angles = angles;
         ###
         return;
     ###
     def PopulateGenerics(self):
+        '''Generic population input-related metrics.''';
         multiplier, tallyNumber, particleOne, particleTwo = ReCompile(r'f(m?)(\d{1,8})\s*:?\s*([np]?)\s*,?\s*([np]?)', 2 | 8).search(self.GetRaw()).groups();
         self.number = int(float(tallyNumber));
         self.mnemonic = 'f{}{}'.format(['', multiplier][multiplier != None], self.GetNumber() % 10);
@@ -2709,11 +2922,13 @@ class McnpTally(McnpCard):
         return;
     ###
     def PopulateEnergys(self, energys):
+        '''Attach energy bins.''';
         self.energys = energys;
         ###
         return;
     ###
     def PopulateResults(self, resultString):
+        '''Parse and populate tally output text.''';
         self.resultString = resultString;
         ###
         reSpaces = ReCompile(r' {2,}', 2 | 8);
@@ -2767,6 +2982,7 @@ class McnpTally(McnpCard):
         return;
     ###
     def PopulateSpaces(self):
+        '''Attach spaces.''';
         spaces = ' '.join(self.GetRaw().split()[1 : ]);
         ###
         if any(character in self.GetRaw() for character in '()'):
@@ -2794,30 +3010,36 @@ class McnpTally(McnpCard):
 # MCNP F1 surface current tally
 ###
 class McnpSurfaceCurrentTally(McnpTally):
+    '''MCNP surface current tally.''';
     pass;
 ###
 # MCNP F2 surface flux tally
 ###
 class McnpSurfaceFluxTally(McnpTally):
+    '''MCNP surface flux tally.''';
     pass;
 ###
 # MCNP F4 cell flux tally
 ###
 class McnpCellFluxTally(McnpTally):
+    '''MCNP cell flux tally.''';
     pass;
 ###
 # MCNP FM4 cell flux multiplier tally
 ###
 class McnpCellFluxMultiplierTally(McnpTally):
+    '''MCNP cell flux tally with multiplier.''';
     ###
     # Generic getter methods
     ###
     def GetMultiplierBins(self):
+        '''Return multiplier bins.''';
         return self.multiplierBins;
     ###
     # Population methods
     ###
     def CrackBin(self, tallyBin):
+        '''Helper for parsing multiplier bins.''';
         tallyBin = iter(tallyBin.split());
         ###
         multiplier = next(tallyBin);
@@ -2838,6 +3060,7 @@ class McnpCellFluxMultiplierTally(McnpTally):
         return ((multiplier, materialNumber, reactionNumber) for reactionNumber in reactionNumbers);
     ###
     def PopulateSpaces(self, tallys):
+        '''Attach inherited particles and spaces.''';
         for tally in tallys:
             if tally.GetMnemonic() in ('f4', 'f5') and tally.GetNumber() == self.GetNumber():
                 self.particles = tally.GetParticles();
@@ -2846,6 +3069,7 @@ class McnpCellFluxMultiplierTally(McnpTally):
         return;
     ###
     def PopulateMultiplierBins(self, cells):
+        '''Construct multiplier bins.''';
         ###
         # Multiplier bins and particles
         ###
@@ -2914,32 +3138,39 @@ class McnpCellFluxMultiplierTally(McnpTally):
 # MCNP F5 detector tally
 ###
 class McnpDetectorTally(McnpTally):
+    '''MCNP detector tally.''';
     pass;
 ###
 # MCNP FM5 detector multiplier tally
 ###
 class McnpDetectorMultiplierTally(McnpCellFluxMultiplierTally):
+    '''MCNP detector tally.''';
     pass;
 ###
 # MCNP F6 cell energy deposition tally
 ###
 class McnpCellEnergyDepositionTally(McnpTally):
+    '''MCNP cell energy deposition tally.''';
     pass;
 ###
 # MCNP F7 cell fission energy deposition tally
 ###
 class McnpCellFissionEnergyDepositionTally(McnpTally):
+    '''MCNP cell fission energy deposition tally.''';
     pass;
 ###
 # MCNP F8 cell pulse height tally
 ###
 class McnpCellPulseHeightTally(McnpTally):
+    '''MCNP cell pulse height tally.''';
     pass;
 ###
 # MCNP input file parser
 ###
 class McnpInputFile:
+    '''MCNP input file parser.''';
     def __init__(self, fileName, outputRaw = None):
+        '''Construct a new instance.''';
         self.outputRaw = outputRaw;
         ###
         # Read input raw or extract it from the output raw
@@ -2965,6 +3196,7 @@ class McnpInputFile:
     # Mathematical operator overloaders
     ###
     def __sub__(self, other):
+        '''Return fractional difference between system total isotopics.''';
         if isinstance(other, self.__class__):
             ###
             # Sum isotopic moles over cells
@@ -2996,43 +3228,55 @@ class McnpInputFile:
             return norm;
     ###
     def __rsub__(self, other):
+        '''Return fractional difference between system total isotopics.''';
         return -self.__sub__(other);
     ###
     # Generic getter methods
     ###
     def GetAngles(self):
+        '''Return angle cards.''';
         return self.angles;
     ###
     def GetCellBlock(self):
+        '''Return block of cell cards.''';
         return self.cellBlock;
     ###
     def GetCellNumberDecayPower(self, cellNumber, za2WattsPerMole):
+        '''Return decay power for a cell.''';
         cell = self.FindCell(cellNumber);
         ###
         return sum(moles * za2WattsPerMole[za] for za, moles in cell.GetZa2Moles().items() if za in za2WattsPerMole);
     ###
     def GetCellNumberPaths(self, cellNumber):
+        '''Return hierarchical path for a cell.''';
         return self.GetCellNumber2Paths()[cellNumber];
     ###
     def GetCellNumber2Paths(self):
+        '''Return dictionary mapping cell to hierarchical path.''';
         return self.cellNumber2Paths;
     ###
     def GetCells(self):
+        '''Return list of cells.''';
         return self.cells;
     ###
     def GetCellNumbers(self):
+        '''Return list of cell numbers.''';
         return self.cellNumbers;
     ###
     def GetDataBlock(self):
+        '''Return block of data cards.''';
         return self.dataBlock;
     ###
     def GetEnergys(self):
+        '''Return energy cards.''';
         return self.energys;
     ###
     def GetFileName(self):
+        '''Return filename.''';
         return self.fileName;
     ###
     def GetFissionCells(self):
+        '''Return list of cells which contain fissile isotopes.''';
         fissionCells = [];
         for cellNumber in self.GetPowerCells():
             material = self.FindCellMaterial(cellNumber);
@@ -3043,50 +3287,65 @@ class McnpInputFile:
         return fissionCells;
     ###
     def GetHeavyMetalMT(self):
+        '''Return syystem total metric tonnes of heavy metal.''';
         return sum(cell.GetHeavyMetalMT() for cell in self.GetCells() if cell.GetMaterialNumber());
     ###
     def GetInputRaw(self):
+        '''Return text.''';
         return self.inputRaw;
     ###
     def GetIsKcode(self):
+        '''Return if it is a criticality problem.''';
         return self.GetNamedCard('kcode') is not None;
     ###
     def GetInputRawWithoutComments(self):
+        '''Return text without comments.''';
         return self.inputRawWithoutComments;
     ###
     def GetIsCoupled(self):
+        '''Return if photons are considered.''';
         return 'p' in self.GetMode();
     ###
     def GetIsMultiplyRootedLeafCell(self, leafCell):
+        '''Return if a cell appears in multiple root cells.''';
         return leafCell in self.GetMultiplyRootedLeafCells();
     ###
     def GetMultiplyRootedLeafCell(self, leafCell):
+        '''Return path for a cell which appears in multiple root cells.''';
         return self.GetMultiplyRootedLeafCells()[leafCell];
     ###
     def GetMultiplyRootedLeafCells(self):
+        '''Return dictionary mapping cell to path for cells which appear in multiple root cells.''';
         return self.multiplyRootedLeafCells;
     ###
     def GetMaterials(self):
+        '''Return list of materials.''';
         return self.materials;
     ###
     def GetMaterialNumbers(self):
+        '''Return list of material numbers.''';
         return self.materialNumbers;
     ###
     def GetMode(self):
+        '''Return particle mode (n, p, or np).''';
         return ''.join(str(self.GetNamedCard('mode')).split()[1 : ]).lower();
     ###
     def GetNamedCard(self, cardName):
+        '''Return list of named cards for a variety.''';
         namedCards = self.GetNamedCards();
         if cardName in namedCards:
             return namedCards[cardName];
     ###
     def GetNamedCards(self):
+        '''Return dictionary of named cards.''';
         return self.namedCards;
     ###
     def GetOutputRaw(self):
+        '''Return text for associated output.''';
         return self.outputRaw;
     ###
     def GetPowerCells(self):
+        '''Return list of cells which are dense enough to provide power.''';
         powerCells = [];
         for cell in self.GetCells():
             ###
@@ -3107,23 +3366,29 @@ class McnpInputFile:
         return powerCells;
     ###
     def GetSurfaces(self):
+        '''Return list of surface cards.''';
         return self.surfaces;
     ###
     def GetSurfaceBlock(self):
+        '''Return block of surface cards.''';
         return self.surfaceBlock;
     ###
     def GetTallyIndices(self, mnemonic):
+        '''Return spaces for a tally type mnemonic.''';
         return self.GetTallyType2Indices()[mnemonic.lower()];
     ###
     def GetTallyType2Indices(self):
+        '''Return dictionary mapping tally type mnemonic to spaces.''';
         return self.tallyType2Indices;
     ###
     def GetTallys(self, mnemonic = None):
+        '''Return list of tally cards.''';
         if mnemonic is not None:
             return (tally for tally in self.GetTallys() if tally.GetMnemonic() == mnemonic);
         return self.tallys;
     ###
     def GetZa2Moles(self):
+        '''Return dictionary mapping isotope to system total moles.''';
         za2Moles = {};
         for cell in self.GetCells():
             if cell.GetMaterialNumber():
@@ -3137,9 +3402,11 @@ class McnpInputFile:
     # Constructed getter methods
     ###
     def FindCell(self, cellNumber):
+        '''Find a cell by cell number.''';
         return self.GetCells()[self.GetCellNumbers().index(cellNumber)];
     ###
     def FindCellMaterial(self, cellNumber):
+        '''Find a cell material by cell number.''';
         cell = self.FindCell(cellNumber);
         if not cell:
             return;
@@ -3148,6 +3415,7 @@ class McnpInputFile:
         return self.FindMaterial(materialNumber);
     ###
     def FindCellSurfaces(self, cellNumber):
+        '''Find cell surfaces by cell number.''';
         cell = self.FindCell(cellNumber);
         if not cell:
             return;
@@ -3156,6 +3424,7 @@ class McnpInputFile:
         return (surface for surface in self.GetSurfaces() if surface.GetNumber() in surfaceNumbers);
     ###
     def FindLeafCells(self, cells):
+        '''Find cells contained within a cell.''';
         try:
             leafCells = [];
             ###
@@ -3179,10 +3448,12 @@ class McnpInputFile:
             return self.FindLeafCells([cells]);
     ###
     def FindMaterial(self, materialNumber):
+        '''Find a material by material number.''';
         if 0 != materialNumber:
             return self.GetMaterials()[self.GetMaterialNumbers().index(materialNumber)];
     ###
     def FindRootCells(self, cells):
+        '''Find cells which contain a cell.''';
         try:
             rootCells = [];
             ###
@@ -3206,6 +3477,7 @@ class McnpInputFile:
             return self.FindRootCells([cells]);
     ###
     def FindSingleZaidMaterialNumber(self, zaid):
+        '''Find material number which contains a single isotope.''';
         for material in self.GetMaterials():
             if material.GetIsSingleIsotope():
                 if zaid in material.GetZaids():
@@ -3214,6 +3486,7 @@ class McnpInputFile:
     # Input card stripping methods
     ###
     def Block2SingleLineCards(self, raw):
+        '''Return card blocks with newlines and continuations stripped.''';
         reIndent = ReCompile(r'^( {5,}|\t)', 2 | 8);
         reAmpersand = ReCompile(r'&\s{1,}$', 2 | 8);
         ###
@@ -3233,17 +3506,21 @@ class McnpInputFile:
         return cards;
     ###
     def GetCellCards(self):
+        '''Return list of cell cards.''';
         return self.Block2SingleLineCards(self.GetCellBlock());
     ###
     def GetDataCards(self):
+        '''Return list of data cards.''';
         return self.Block2SingleLineCards(self.GetDataBlock());
     ###
     def GetSurfaceCards(self):
+        '''Return list of surface cards.''';
         return self.Block2SingleLineCards(self.GetSurfaceBlock());
     ###
     # Population methods
     ###
     def Populate(self):
+        '''Populate.''';
         ###
         # Populate input blocks
         ###
@@ -3281,6 +3558,7 @@ class McnpInputFile:
         return;
     ###
     def PopulateInputBlocks(self):
+        '''Extract cell, surface, and data blocks.''';
         ###
         # cell block, surface block, data block
         ###
@@ -3290,6 +3568,7 @@ class McnpInputFile:
         return;
     ###
     def PopulateCellHeirarchy(self):
+        '''Determine hierarchy of cells.''';
         ###
         # Build childCell -> parentCells
         ###
@@ -3429,6 +3708,7 @@ class McnpInputFile:
         return;
     ###
     def PopulateDataCards(self):
+        '''Populate the many named data card types.''';
         ###
         # Populate defaults
         ###
@@ -3636,6 +3916,7 @@ class McnpInputFile:
         return;
     ###
     def PopulateCellMaterialAttributes(self):
+        '''Populate the many named data card types.''';
         ###
         # Calculate cell number densities, regardless of material density / fraction provided
         ###
@@ -3656,6 +3937,7 @@ class McnpInputFile:
         return;
     ###
     def PopulateTallySpecifics(self):
+        '''Attach modifiers to tallys.''';
         for tally in self.GetTallys():
             ###
             # Attach energy bins
@@ -3688,6 +3970,7 @@ class McnpInputFile:
         return;
     ###
     def PopulateTallyIndices(self):
+        '''Populate lists of spaces which are tallied.''';
         tallyType2Indices = {mnemonic : [] for mnemonic in ('f1', 'f2', 'f4', 'f5', 'f6', 'f7', 'f8')};
         tallyType2Indices['fm4'] = {};
         ###
@@ -3758,6 +4041,7 @@ class McnpInputFile:
     # Report methods
     ###
     def Report(self, arguments):
+        '''Offer summary or diagnostic reports to stdout.''';
         ###
         if arguments.reportCells:
             ###
@@ -3809,14 +4093,17 @@ class McnpInputFile:
     # Automated input file methods
     ###
     def AppendNewputCard(self, card):
+        '''Append a card to input.''';
         self.newputRaw += '\n{}'.format(str(card).strip());
         ###
         return;
     ###
     def GetIsUpdated(self):
+        '''Return if input cards have been added or modified.''';
         return hasattr(self, 'newputRaw');
     ###
     def GetNewputFileName(self, depletionStep):
+        '''Return file name for new input.''';
         fileName = self.GetFileName();
         if '.' in fileName:
             fileName = '.'.join(fileName.split('.')[ : -1]);
@@ -3824,14 +4111,17 @@ class McnpInputFile:
         return '{}.{:03d}'.format(fileName, depletionStep);
     ###
     def GetNewputRaw(self):
+        '''Return new input text.''';
         return self.newputRaw;
     ###
     def ResetNewput(self):
+        '''Revert new input text to original text.''';
         self.newputRaw = self.GetInputRaw();
         ###
         return;
     ###
     def ReplaceNewputCard(self, oldCard, newCard):
+        '''Modify an existing card.''';
         if not hasattr(self, 'newputRaw'):
             self.ResetNewput();
         ###
@@ -3843,6 +4133,7 @@ class McnpInputFile:
         return;
     ###
     def ReplaceNamedNewputCard(self, oldCardName, newCard):
+        '''Modify an existing named card.''';
         oldCard = self.GetNamedCard(oldCardName);
         ###
         self.ReplaceNewputCard(oldCard, newCard);
@@ -3852,7 +4143,9 @@ class McnpInputFile:
 # MCNP output file parser
 ###
 class McnpOutputFile:
+    '''MCNP output file parser.''';
     def __init__(self, fileName):
+        '''Construct a new instance.''';
         self.fileName = fileName;
         ###
         self.outputRaw = ReadFile(self.GetFileName(), display = not bool(arguments.isQuiet));
@@ -3862,6 +4155,7 @@ class McnpOutputFile:
         return;
     ###
     def __str__(self):
+        '''Return brief summary string.''';
         lines = ['< Transport results summary for `{}\' >'.format(self.GetFileName())];
         ###
         nameValue = (
@@ -3879,30 +4173,39 @@ class McnpOutputFile:
     # Generic getter methods
     ###
     def GetFileName(self):
+        '''Return filename.''';
         return self.fileName;
     ###
     def GetOutputRaw(self):
+        '''Return text.''';
         return self.outputRaw;
     ###
     def GetMevPerFission(self):
+        '''Return effective MeV per fission.''';
         return self.mevPerFission;
     ###
     def GetMcnpInputFile(self):
+        '''Return MCNP input file derived from output text.''';
         return self.mcnpInputFile;
     ###
     def GetMultiplicationFactor(self):
+        '''Return multiplication factor.''';
         return self.multiplicationFactor;
     ###
     def GetMultiplicationFactorRV(self):
+        '''Return multiplication factor random variable.''';
         return RandomVariable(self.GetMultiplicationFactor(), self.GetMultiplicationFactorSigma(), isStd = True);
     ###
     def GetMultiplicationFactorSigma(self):
+        '''Return multiplication factor standard deviation.''';
         return self.multiplicationFactorSigma;
     ###
     def GetNeutronsPerFission(self):
+        '''Return effective neutrons per fission.''';
         return self.neutronsPerFission;
     ###
     def GetSourceRate(self, realSourceRate = False):
+        '''Return system total neutron source rate.''';
         try:
             multiplier = 1.;
             if realSourceRate:
@@ -3915,14 +4218,17 @@ class McnpOutputFile:
     # Automated input file methods
     ###
     def GetIsUpdated(self):
+        '''Return if an update is warranted.''';
         return hasattr(self.GetMcnpInputFile(), 'newputRaw');
     ###
     # Physical quantity getter methods
     ###
     def GetCellNumberFissionPower(self, cellNumber):
+        '''Return fission power for a cell.''';
         return self.GetCellNumberQPower(cellNumber, 'mcnp');
     ###
     def GetCellNumberFissionRate(self, cellNumber, mnemonic = 'fm4'):
+        '''Return fission rate for a cell.''';
         ###
         # Accumulate fission rate from each leaf cell
         ###
@@ -3931,9 +4237,11 @@ class McnpOutputFile:
         return sum(self.GetCellNumberReactionRate(leafCell.GetNumber(), self.FindSingleZaidMaterialNumber(zaid), reactionNumber, doFloat = True) for leafCell in self.FindLeafCells(cellNumber) for zaid in self.FindCellMaterial(cellNumber).GetZaids() if ZaIsActinide(Zaid2Za(zaid)));
     ###
     def GetCellNumberOrigenPower(self, cellNumber, isOrigen2):
+        '''Return ORIGEN power for a cell.''';
         return self.GetCellNumberQPower(cellNumber, qMethod = ['origens', 'origen2'][isOrigen2]);
     ###
     def GetCellNumberMicroscopicCrossSection(self, cellNumber, materialNumber, reactionNumber):
+        '''Derive one-group microscopic cross-section for a cell, isotope, and reaction.''';
         ###
         # reactionNumber = -6 is synonymous with reactionNumber = 18
         ###
@@ -3988,6 +4296,7 @@ class McnpOutputFile:
         return SafeDivide(reactionsPerN, scalarFlux);
     ###
     def GetCellNumberParticlePower(self, cellNumber, mnemonic = 'f6'):
+        '''Return prompt power for a cell.''';
         power = 0;
         ###
         for tally in self.GetTallys(mnemonic):
@@ -4006,6 +4315,7 @@ class McnpOutputFile:
         return power * self.GetSourceRate();
     ###
     def GetCellNumberQPower(self, cellNumber, qMethod):
+        '''Return power for a cell using a number of reaction Q-values.''';
         if 'mcnp' == qMethod:
             ZRs = ((QFissionMCNP, -6), );
         elif 'monteburns2' == qMethod:
@@ -4018,6 +4328,7 @@ class McnpOutputFile:
         return joulePerMev * sum(sum(Za2Q(Zaid2Za(zaid)) * self.GetCellNumberReactionRate(cellNumber, self.FindSingleZaidMaterialNumber(zaid), reactionNumber, doFloat = True) for zaid in self.FindCellMaterial(cellNumber).GetZaids() if ZaIsActinide(Zaid2Za(zaid))) for Za2Q, reactionNumber in ZRs);
     ###
     def GetCellNumberReactionRate(self, cellNumber, materialNumber, reactionNumber, mnemonic = 'fm4', forMicro = False, doFloat = False):
+        '''Derive reaction rate for a cell, isotope, and reaction.''';
         ###
         #
         ###
@@ -4092,12 +4403,14 @@ class McnpOutputFile:
         return SafeDivide(totalReactionRatePerNumberDensity * self.GetSourceRate(), totalVolume);
     ###
     def GetCellNumberScalarFlux(self, cellNumber, mnemonic = 'f4'):
+        '''Derive scalar flux for a cell.''';
         ###
         # flux = track length / volume
         ###
         return SafeDivide(*self.GetCellNumberTrackLengthVolume(cellNumber, mnemonic));
     ###
     def GetCellNumberTrackLengthVolume(self, cellNumber, mnemonic = 'f4'):
+        '''Derive track length and volume for a cell.''';
         totalTrackLength = totalVolume = 0;
         ###
         # Accumulate track lengths and volumes from each leaf cell
@@ -4135,6 +4448,7 @@ class McnpOutputFile:
     # Population methods
     ###
     def Populate(self):
+        '''Populate.''';
         ###
         # Populate mcnp input file
         ###
@@ -4156,6 +4470,7 @@ class McnpOutputFile:
         return;
     ###
     def PopulateMcnpInputFileMethods(self):
+        '''Populate methods derived from MCNP input.''';
         mcnpInputFileMethods = (
             'FindCell',
             'FindCellMaterial',
@@ -4186,6 +4501,7 @@ class McnpOutputFile:
         return;
     ###
     def PopulateTallyResults(self):
+        '''Populate tally results.''';
         ###
         # Parse tally results
         ###
@@ -4202,6 +4518,7 @@ class McnpOutputFile:
         return;
     ###
     def PopulateMultiplicationResults(self):
+        '''Populate multiplication factor results.''';
         ###
         # Kick out if multiplication results don't exist
         ###
@@ -4232,6 +4549,7 @@ class McnpOutputFile:
         return;
     ###
     def PopulateSourceRate(self, sourceRate):
+        '''Attach system total neutron source rate.''';
         self.sourceRate = sourceRate;
         ###
         return;
@@ -4239,6 +4557,7 @@ class McnpOutputFile:
     # Report methods
     ###
     def Report(self, arguments):
+        '''Offer summary or diagnostic reports to stdout.''';
         ###
         if arguments.reportKeff:
             ###
@@ -4335,6 +4654,7 @@ class McnpOutputFile:
         return;
     ###
     def WritePhysicalQuantity(self, fileName, getter, headerFormat, tallyResults, downSample):
+        '''Offer summary or diagnostic reports to file.''';
         ###
         # Kick out null tally results
         ###
@@ -4372,7 +4692,9 @@ class McnpOutputFile:
 # ORIGEN2.2 output file parser
 ###
 class OrigenCalculation:
+    '''ORIGEN2 calculation.''';
     def __init__(self, suffix, cellVolume, directory = ''):
+        '''Construct a new instance.''';
         self.suffix = suffix;
         self.volume = cellVolume;
         self.directory = directory;
@@ -4384,93 +4706,119 @@ class OrigenCalculation:
     # Generic getter methods
     ###
     def GetBurnup(self):
+        '''Return exposure accrued.''';
         return self.burnup;
     ###
     def GetDecayPower(self, za2WattsPerMole):
+        '''Return decay power.''';
         return sum(moles * za2WattsPerMole[Zaid2Za(zaid)] for zaid, moles in self.GetZaid2Moles().items() if Zaid2Za(zaid) in za2WattsPerMole);
     ###
     def GetDirectory(self):
+        '''Return working directory.''';
         return self.directory;
     ###
     def GetFlux(self):
+        '''Return flux magnitude.''';
         return self.flux;
     ###
     def GetMoles(self):
+        '''Return cell total moles.''';
         return sum(self.GetZaid2Moles().values());
     ###
     def GetPower(self):
+        '''Return transmute power.''';
         return self.power;
     ###
     def GetSuffix(self):
+        '''Return nuclear library suffix.''';
         return self.suffix;
     ###
     def GetNumberDensity(self):
+        '''Return cell total atoms per barn centimeter.''';
         return sum(self.GetZaid2NumberDensity().values());
     ###
     def GetMassDensity(self):
+        '''Return cell total grams per cubic centimeter.''';
         return sum(self.GetZaid2MassDensity().values());
     ###
     def GetMicros(self):
+        '''Return one-group microscopic cross-sections.''';
         return self.micros;
     ###
     def GetTableTotal(self, tableNumber):
+        '''Return sum of a reported table.''';
         return sum(self.GetZaidTableNumber2Value(tableNumber).values());
     ###
     def GetTAPE4(self):
+        '''Return TAPE4.''';
         return self.TAPE4;
     ###
     def GetTAPE5(self):
+        '''Return TAPE5.''';
         return self.TAPE5;
     ###
     def GetTAPE6(self):
+        '''Return TAPE6.''';
         return self.TAPE6;
     ###
     def GetTAPE7(self):
+        '''Return TAPE7.''';
         return self.TAPE7;
     ###
     def GetTAPE9(self):
+        '''Return TAPE9.''';
         return self.TAPE9;
     ###
     def GetTAPE10(self):
+        '''Return TAPE10.''';
         return self.TAPE10;
     ###
     def GetVolume(self):
+        '''Return cubic centimeters.''';
         return self.volume;
     ###
     def GetZaid2AbsorptionFraction(self):
+        '''Return dictionary mapping isotope to fractional absorption.''';
         tableNumber = 19;
         totalAbsorptionRate = self.GetTableTotal(tableNumber);
         ###
         return {zaid : absorptionRate / totalAbsorptionRate for zaid, absorptionRate in self.GetZaidTableNumber2Value(tableNumber).items()};
     ###
     def GetZaid2AtomFraction(self):
+        '''Return dictionary mapping isotope to atom fission.''';
         totalMoles = self.GetMoles();
         ###
         return {zaid : moles / totalMoles for zaid, moles in self.GetZaid2Moles().items()};
     ###
     def GetZaid2FissionFraction(self):
+        '''Return dictionary mapping isotope to fractional fission.''';
         tableNumber = 21;
         totalFissionRate = self.GetTableTotal(tableNumber);
         ###
         return {zaid : fissionRate / totalFissionRate for zaid, fissionRate in self.GetZaidTableNumber2Value(tableNumber).items()};
     ###
     def GetZaid2Moles(self):
+        '''Return dictionary mapping isotope to moles.''';
         return self.zaid2Moles;
     ###
     def GetZaid2NumberDensity(self):
+        '''Return dictionary mapping isotope to atoms per barn centimeter.''';
         volume = self.GetVolume();
         ###
         return {zaid : moles * avogadrosNumber / volume for zaid, moles in self.GetZaid2Moles().items()};
     ###
     def GetZaid2MassDensity(self):
+        '''Return dictionary mapping isotope to grams per cubic centimeter.''';
         volume = self.GetVolume();
         ###
         return {zaid : moles * Zaid2MolarMass(zaid) / volume for zaid, moles in self.GetZaid2Moles().items()};
     ###
     def GetZaidTableNumber2Value(self, tableNumber):
+        '''Return result table for a table number.''';
         return self.zaid2TableNumber2Value[tableNumber];
     ###
     def GetZaid2WeightFraction(self):
+        '''Return dictionary mapping isotope to weight fission.''';
         totalMassDensity = self.GetMassDensity();
         ###
         return {zaid : massDensity / totalMassDensity for zaid, massDensity in self.GetZaid2MassDensity().items()};
@@ -4478,11 +4826,13 @@ class OrigenCalculation:
     # Population methods
     ###
     def AttachMicros(self, micros):
+        '''Attach one-group microscopic cross-sections.''';
         self.micros = micros;
         ###
         return;
     ###
     def Populate(self):
+        '''Populate.''';
         ###
         # Read TAPE4.INP
         ###
@@ -4533,18 +4883,23 @@ class OrigenCalculation:
 # Random variable: float with uncertainty
 ###
 class RandomVariable:
+    '''Statistical random variable.''';
     def __abs__(self):
+        '''Return absolute value.''';
         expected = abs(self.GetExp());
         variance = self.GetVar();
         ###
         return RandomVariable(expected, variance, isVar = True);
     def __bool__(self):
+        '''Return if expected value is non-zero.''';
         return bool(self.GetExp());
     ###
     def __float__(self):
+        '''Return expected value.''';
         return self.GetExp();
     ###
     def __init__(self, expected, uncertainty, isStd = False, isVar = False):
+        '''Construct a new instance.''';
         self.expected = float(expected);
         uncertainty = float(uncertainty);
         ###
@@ -4558,14 +4913,17 @@ class RandomVariable:
         return;
     ###
     def __lt__(self, other):
+        '''Compare with another.''';
         return float(self) < other;
     ###
     def __str__(self):
+        '''Return summary of expected value and standard deviation.''';
         return '{:>+10.5f} ± {: >7.5f}'.format(self.GetExp(), self.GetStd());
     ###
     # Mathematical operator overloaders
     ###
     def __add__(self, other):
+        '''Add to another.''';
         if isinstance(other, int) or isinstance(other, float):
             ###
             # Expected is affected
@@ -4590,6 +4948,7 @@ class RandomVariable:
         return RandomVariable(expected, variance, isVar = True);
     ###
     def __mul__(self, other):
+        '''Multiply with another.''';
         if isinstance(other, int) or isinstance(other, float):
             ###
             # Expected, variance is affected
@@ -4611,6 +4970,7 @@ class RandomVariable:
         return RandomVariable(expected, variance, isVar = True);
     ###
     def __truediv__(self, other):
+        '''Divide another.''';
         if isinstance(other, int) or isinstance(other, float):
             return self * SafeDivide(1, other);
         elif isinstance(other, self.__class__):
@@ -4626,6 +4986,7 @@ class RandomVariable:
         return RandomVariable(expected, variance, isVar = True);
     ###
     def __pow__(self, other):
+        '''Take to an exponent.''';
         assert(isinstance(other, int) or isinstance(other, float));
         ###
         if other < 0:
@@ -4644,38 +5005,49 @@ class RandomVariable:
     __rtruediv__ = lambda self, other: other * self.__pow__(-1);
     ###
     def __sub__(self, other):
+        '''Subtract another.''';
         return self.__add__(-other);
     ###
     def __rsub__(self, other):
+        '''Subtract from another.''';
         return -self.__sub__(other);
     ###
     def __pos__(self):
+        '''Positive.''';
         return self;
     ###
     def __neg__(self):
+        '''Negate.''';
         return -1 * self;
     ###
     def __eq__(self, other):
+        '''Return if equal to another.''';
         return float(self) == float(other);
     ###
     def __lt__(self, other):
+        '''Compare to another.''';
         return float(self) < float(other);
     ###
     # Getters
     ###
     def GetExp(self):
+        '''Return expected value.''';
         return self.expected;
     ###
     def GetRelStd(self):
+        '''Return relative standard deviation.''';
         return self.GetRelVar() ** 0.5;
     ###
     def GetStd(self):
+        '''Return standard deviation.''';
         return self.GetVar() ** 0.5;
     ###
     def GetRelVar(self):
+        '''Return relative variance.''';
         return SafeDivide(self.GetVar(), self.GetExp() ** 2);
     ###
     def GetVar(self):
+        '''Return variance.''';
         return self.variance;
     ###
     GetElements = GetTotalElement = GetExp;
@@ -4685,7 +5057,9 @@ class RandomVariable:
 # Accelerated recycle calculation
 ###
 class RecycleCalculation:
+    '''Recycle calculation, held in memory during operation.''';
     def __init__(self, arguments):
+        '''Construct a new instance.''';
         ###
         # Set argument attributes
         ###
@@ -4700,29 +5074,37 @@ class RecycleCalculation:
     # Generic getter methods
     ###
     def GetArguments(self):
+        '''Return runtime arguments.''';
         return self.arguments;
     ###
     def GetDisplayFiles(self):
+        '''Return if file operations are verbose.''';
         return not bool(self.GetArguments().isQuiet);
     ###
     def GetIsPickleTransmute(self):
+        '''Return if current depletion step is to be transmuted using pickles.''';
         return self.isPickleTransmute;
     ###
     def GetParameter(self, key):
+        '''Return mocdown input file parameter for a key.''';
         return self.GetParameters()[key];
     ###
     def GetParameters(self):
+        '''Return mocdown input file parameters.''';
         return mocDownInputFile.GetParameters();
     ###
     def GetRecycleIndex(self):
+        '''Return index of current recycling step.''';
         return self.recycleIndex;
     ###
     def GetRecycleString(self):
+        '''Return string for current recycling step.''';
         return '{} recycle #{:d}'.format(['transport/transmute', 'transmute-only'][self.GetIsPickleTransmute()], self.GetRecycleIndex());
     ###
     # Recycle methods
     ###
     def Recycle(self):
+        '''Execute MocDown recycling.''';
         PrintNow('> {} will recycle to equilibrium'.format(__file__));
         ###
         # First, a transport/transmute recycle is performed;
@@ -4809,6 +5191,7 @@ class RecycleCalculation:
         return;
     ###
     def PrepareRecycle(self, transportFile, finale = False):
+        '''Populate default recycling parameters.''';
         ###
         # If this is a pickle transmute recycle, unarchive pickles from the previous recycle
         ###
@@ -4828,6 +5211,7 @@ class RecycleCalculation:
         return;
     ###
     def ArchiveRecycle(self):
+        '''Move files from previous recycling step to a folder.''';
         PrintNow('> Archiving {}'.format(self.GetRecycleString()));
         ###
         # Create backup depletion directory
@@ -4850,11 +5234,13 @@ class RecycleCalculation:
         return;
     ###
     def IncrementRecycleIndex(self):
+        '''Increment index of recycling iterations.''';
         self.recycleIndex += 1;
         ###
         return;
     ###
     def IsotopicsHaveConverged(self, transportOne, transportTwo):
+        '''Return if isotopics of subsequent cycles have converged.''';
         if transportOne is None or transportTwo is None:
             PrintNow('> Isotopics convergence: UNDEFINED during {} ... continue transmute-only recycle'.format(self.GetRecycleString()));
             ###
@@ -4880,6 +5266,7 @@ class RecycleCalculation:
             return True;
     ###
     def MultiplicationHasConverged(self, depletionOne, depletionTwo):
+        '''Return if multiplication of subsequent transport cycles have converged.''';
         if depletionOne is None or depletionTwo is None:
             PrintNow('> Multiplication convergence: UNDEFINED during {} ... continue transmute-only recycle'.format(self.GetRecycleString()));
             ###
@@ -4903,13 +5290,17 @@ class RecycleCalculation:
 # Tally result
 ###
 class TallyResult:
+    '''MCNP tally parser.''';
     def __bool__(self):
+        '''Return if total is non-zero.''';
         return bool(self.GetTotalElement());
     ###
     def __float__(self):
+        '''Return total.''';
         return self.GetTotalElement();
     ###
     def __init__(self, *args):
+        '''Construct a new instance.''';
         if 2 == len(args):
             ###
             # Match iterator and number of iterations
@@ -4947,11 +5338,13 @@ class TallyResult:
         return;
     ###
     def __len__(self):
+        '''Return number of energy bins.''';
         return len(self.GetEnergys());
     ###
     # Mathematical operator overloaders
     ###
     def __add__(self, other):
+        '''Add to another.''';
         if isinstance(other, int) or isinstance(other, float):
             ###
             # Elements and sum(elements) are affected
@@ -4980,6 +5373,7 @@ class TallyResult:
         return TallyResult(self.GetEnergys(), elements, variances, totalElement, totalVariance);
     ###
     def __mul__(self, other):
+        '''Multiply with another.''';
         if isinstance(other, int) or isinstance(other, float):
             ###
             # Elements, variances, sum(elements), sum(variances) are affected
@@ -5012,6 +5406,7 @@ class TallyResult:
         return TallyResult(self.GetEnergys(), elements, variances, totalElement, totalVariance);
         ###
     def __truediv__(self, other):
+        '''Divide another.''';
         if isinstance(other, int) or isinstance(other, float):
             return self * SafeDivide(1., other);
         elif isinstance(other, self.__class__) or isinstance(other, RandomVariable):
@@ -5049,37 +5444,47 @@ class TallyResult:
     __rmul__ = __mul__;
     ###
     def __sub__(self, other):
+        '''Subtract another.''';
         return self.__add__(-other);
     ###
     def __rsub__(self, other):
+        '''Subtract from another.''';
         return -self.__sub__(other);
     ###
     def __pos__(self):
+        '''Positive.''';
         return self;
     ###
     def __neg__(self):
+        '''Negate.''';
         return -1. * self;
     ###
     # Generic getter methods
     ###
     def GetElements(self):
+        '''Return energy bin values.''';
         return self.elements;
     ###
     def GetEnergys(self):
+        '''Return energy bin boundaries.''';
         return self.energys;
     ###
     def GetTotalElement(self):
+        '''Return total.''';
         return self.totalElement;
     ###
     def GetTotalVariance(self):
+        '''Return total variance.''';
         return self.totalVariance;
     ###
     def GetVariances(self):
+        '''Return variances for each energy bin.''';
         return self.variances;
     ###
     # Algorithmic methods
     ###
     def HalfSample(self, doAverage = False):
+        '''Downsample energy bins by one half.''';
         isOdd = len(self) % 2;
         ###
         energys = self.GetEnergys()[1 - isOdd : : 2];
@@ -5100,29 +5505,37 @@ class TallyResult:
     # Derived statistical getter methods
     ###
     def GetUncertaintys(self):
+        '''Return standard deviations for each energy bin.''';
         return self.GetVariances() ** 0.5;
     ###
     def GetRelativeUncertaintys(self):
+        '''Return relative standard deviations for each energy bin.''';
         return self.GetRelativeVariances() ** 0.5;
     ###
     def GetRelativeVariances(self):
+        '''Return relative variances for each energy bin.''';
         return Nan2Num(SafeDivide(self.GetVariances(), self.GetElements() ** 2.));
     ###
     def GetTotalRelativeUncertainty(self):
+        '''Return total relative variance.''';
         return SafeDivide(self.GetTotalVariance(), self.GetTotalElement() ** 2.) ** 0.5;
     ###
     def GetTotalUncertainty(self):
+        '''Return total standard deviation.''';
         return self.GetTotalRelativeUncertainty() * abs(self.GetTotalElement());
     ###
     # Bin parameter getter methods
     ###
     def GetEnergyBinMeans(self):
+        '''Return energy bin means.''';
         return self.GetEnergys() - 0.5 * self.GetEnergyPerBins();
     ###
     def GetEnergyPerBins(self):
+        '''Return unit energy per energy bin.''';
         return Concatenate((self.GetEnergys()[ : 1], Difference(self.GetEnergys())));
     ###
     def GetLethargyPerBins(self):
+        '''Return unit lethargy per energy bin.''';
         return Nan2Num(-NaturalLogarithm(1. - self.GetEnergyPerBins() / self.GetEnergys()));
     ###
     # Element per getter methods
@@ -5130,12 +5543,15 @@ class TallyResult:
     GetPerBins = GetElements;
     ###
     def GetPerEnergys(self):
+        '''Return per unit energy.''';
         return SafeDivide(self.GetPerBins(), self.GetEnergyPerBins());
     ###
     def GetPerLethargys(self):
+        '''Return per unit lethargy.''';
         return SafeDivide(self.GetPerBins(), self.GetLethargyPerBins());
     ###
     def GetNormPerLethargys(self):
+        '''Return normalized per unit lethargy.''';
         return SafeDivide(self.GetPerLethargys(), self.GetTotalElement());
 
 ###
@@ -5146,6 +5562,7 @@ class TallyResult:
 # Assert file exists
 ###
 def AssertFileExists(fileName):
+    '''Assert that a file exists.''';
     try:
         assert(isinstance(fileName, str) and Exists(fileName) and FileStatus(fileName)[6]);
     except AssertionError:
@@ -5156,6 +5573,7 @@ def AssertFileExists(fileName):
 # Copy file
 ###
 def CopyFile(pathOne, pathTwo, display = True):
+    '''Copy a file, overwriting its destination.''';
     if display:
         PrintNow('{} -> {}'.format(pathOne, pathTwo));
     if Exists(pathTwo):
@@ -5171,6 +5589,7 @@ def CopyFile(pathOne, pathTwo, display = True):
 # Delete .{dat?,plt?}
 ###
 def DoGnuPlot(fileName, keepPlt = False):
+    '''Execute gnuplot and convert the resulting eps to png and pdf.''';
     gnuplot = '/usr/local/gnuplot422/bin/gnuplot';
     print('Running gnuplot, epstopng, epstopdf, rm on `{}\'.'.format(fileName.replace('.plt', '')));
     ###
@@ -5180,12 +5599,14 @@ def DoGnuPlot(fileName, keepPlt = False):
 # File exists and is newer
 ###
 def ExistsAndNewer(pathOne, pathTwo):
+    '''Return if file exists and is newer.''';
     AssertFileExists(pathTwo);
     return Exists(pathOne) and GetModificationTime(pathTwo) < GetModificationTime(pathOne);
 ###
-# Import supplementary libraries;
+# Import supplementary libraries
 ###
 def ImportLibraries(mocDownInputFile):
+    '''Import supplementary libraries.''';
     ###
     # Iterate over libraries
     ###
@@ -5230,6 +5651,7 @@ def ImportLibraries(mocDownInputFile):
 # Convert isotope string -> ZAm
 ###
 def Isotope2Zam(isotope):
+    '''Convert isotope string -> ZAm.''';
     m = 'M' == isotope[-1];
     A = reNumber.search(isotope).group();
     Z = z2Element.index(isotope.rstrip('M').replace(A, '').strip().capitalize());
@@ -5240,6 +5662,7 @@ def Isotope2Zam(isotope):
 # Based upon ENDF/B-VII.0, Low-fidelity covariance library
 ###
 def IsZaReactionNumberOfInterest(za, reactionNumber):
+    '''Return if a reaction is of interested for an isotope.''';
     z, a = za // 1000, za % 1000;
     ###
     # (n, n) can be significant for any isotope
@@ -5304,6 +5727,7 @@ def IsZaReactionNumberOfInterest(za, reactionNumber):
 # Make directory
 ###
 def MakeDirectory(directoryName, display = True):
+    '''Make directory.''';
     RemoveTree(directoryName, display = display);
     if display:
         PrintNow('{} ^^'.format(directoryName));
@@ -5311,9 +5735,10 @@ def MakeDirectory(directoryName, display = True):
     ###
     return;
 ###
-# Make directory
+# Make temporary directory
 ###
 def MakeTemporaryDirectory(display = True):
+    '''Make temporary directory.''';
     directoryName = LibMakeTemporaryDirectory() + '/';
     if display:
         PrintNow('{} ^^'.format(directoryName));
@@ -5323,6 +5748,7 @@ def MakeTemporaryDirectory(display = True):
 # Move file
 ###
 def MoveFile(pathOne, pathTwo, display = True):
+    '''Move file.''';
     if display:
         PrintNow('{} -> {}'.format(pathOne, pathTwo));
     if Exists(pathOne):
@@ -5333,6 +5759,7 @@ def MoveFile(pathOne, pathTwo, display = True):
 # Key for extracting numerics from strings
 ###
 def NumericStringKey(string):
+    '''Return hash from numerics in a string.''';
     output = [];
     for character in string:
         if character in '0123456789':
@@ -5349,6 +5776,7 @@ def NumericStringKey(string):
 # Print now
 ###
 def PrintNow(*arguments, sep = '\n'):
+    '''Print to stdout immediately.''';
     print(*arguments, sep = sep);
     StdOut.flush();
     ###
@@ -5357,6 +5785,7 @@ def PrintNow(*arguments, sep = '\n'):
 # Q-fission of MCNP
 ###
 def QFissionMCNP(ZA):
+    '''Return Q-fission of MCNP.''';
     za2Q = {
         90232 : 171.91,
         91233 : 175.57,
@@ -5390,6 +5819,7 @@ def QFissionMCNP(ZA):
 # Q-fission of MONTEBURNS2
 ###
 def QFissionMonteburns2(ZA):
+    '''Return Q-fission of MONTEBURNS2.''';
     za2Q = {
         90227 : 0.9043,
         90229 : 0.9247,
@@ -5433,12 +5863,14 @@ def QFissionMonteburns2(ZA):
 # Q-fission of ORIGEN2.2
 ###
 def QFissionOrigen2(ZA):
+    '''Return Q-fission of ORIGEN2.''';
     Z, A = ZA // 1000, ZA % 1000;
     return 1.29927E-03 * (Z ** 2. * A ** 0.5) + 33.12;
 ###
-# Q-capture of ORIGENS
+# Q-capture of ORIGEN-S
 ###
 def QCaptureOrigenS(ZA):
+    '''Return Q-capture of ORIGEN-S.''';
     za2Q = {
          1001 : 2.225,
          5010 : 2.790,
@@ -5505,6 +5937,7 @@ def QCaptureOrigenS(ZA):
 # Q-fission of ORIGEN-S
 ###
 def QFissionOrigenS(ZA):
+    '''Return Q-fission of ORIGEN-S.''';
     za2Q = {
         90230 : 190.00,
         90232 : 189.21,
@@ -5535,6 +5968,7 @@ def QFissionOrigenS(ZA):
 # Read ascii file
 ###
 def ReadFile(fileName, display = True, size = -1):
+    '''Read and return ascii file.''';
     try:
         AssertFileExists(fileName);
     except OSError:
@@ -5555,6 +5989,7 @@ def ReadFile(fileName, display = True, size = -1):
 # Read xsdir from DATAPATH
 ###
 def ReadXsDir(path = None, display = True):
+    '''Find, read, and return xsdir file.''';
     ###
     # 1) Use xsdir in current directory
     # 2) Use path provided by argument
@@ -5580,6 +6015,7 @@ def ReadXsDir(path = None, display = True):
 # Parse MCNP5, MCNP6, or MCNPX input/output file
 ###
 def ReadTransportFile(fileName):
+    '''Read MCNP input or output file.''';
     raw = ReadFile(fileName, False, 4000);
     ###
     if bool(ReCompile(r'^1mcnp', 2 | 8).search(raw)):
@@ -5590,6 +6026,7 @@ def ReadTransportFile(fileName):
 # Remove directory
 ###
 def RemoveDirectory(directoryName, display = True):
+    '''Remove directory.''';
     if Exists(directoryName):
         if display:
             PrintNow('{} XX'.format(directoryName));
@@ -5600,6 +6037,7 @@ def RemoveDirectory(directoryName, display = True):
 # Remove directory tree
 ###
 def RemoveTree(directoryName, display = True):
+    '''Remove directory tree.''';
     if Exists(directoryName):
         if display:
             PrintNow('{}* XX'.format(directoryName));
@@ -5610,6 +6048,7 @@ def RemoveTree(directoryName, display = True):
 # Remove file
 ###
 def RemoveFile(fileName, display = True):
+    '''Remove file.''';
     if Exists(fileName):
         if display:
             PrintNow('{} XX'.format(fileName));
@@ -5620,6 +6059,7 @@ def RemoveFile(fileName, display = True):
 # Safely divide two quantities
 ###
 def SafeDivide(numerator, denominator):
+    '''Safely divide two quantities.''';
     try:
         return numerator / denominator;
     except ZeroDivisionError:
@@ -5628,11 +6068,13 @@ def SafeDivide(numerator, denominator):
 # Determine the slope of a set of points using a simple linear regression
 ###
 def Slope(points):
+    '''Determine the slope of a set of points using a simple linear regression.''';
     return SafeDivide(sum(point.GetX() * point.GetY() for point in points) - SafeDivide(sum(point.GetX() for point in points), len(points)) * sum(point.GetY() for point in points), sum(point.GetX() ** 2 for point in points) - SafeDivide(sum(point.GetX() for point in points) ** 2, len(points)));
 ###
 # Symbolically link files
 ###
 def SymbolicLink(pathOne, pathTwo, display = True):
+    '''Symbolically link files.''';
     AssertFileExists(pathOne);
     RemoveFile(pathTwo, display);
     if display:
@@ -5644,6 +6086,7 @@ def SymbolicLink(pathOne, pathTwo, display = True):
 # Find a unique integer, given a number of digits and container of forbidden integers
 ###
 def UniqueDigits(numberOfDigits, forbiddenNumbers):
+    '''Find a unique integer, given a number of digits and container of forbidden integers.''';
     while True:
         output = RandomInteger(0, 10 ** numberOfDigits - 1);
         if output not in forbiddenNumbers:
@@ -5652,6 +6095,7 @@ def UniqueDigits(numberOfDigits, forbiddenNumbers):
 # Arrange words of a given format within columns
 ###
 def WordArrange(words, format = '', columnNumber = 80, prefix = '', indent = 5):
+    '''Arrange words of a given format within columns.''';
     output = '';
     if '{' not in format:
         format = '{{{}}}'.format(format);
@@ -5668,12 +6112,14 @@ def WordArrange(words, format = '', columnNumber = 80, prefix = '', indent = 5):
 # Display warning messages
 ###
 def Warning(warningMessage):
+    '''Display warning messages.''';
     PrintNow('Warning:\t{}'.format('\n\t\t'.join(warningMessage.split('\n'))));
     return;
 ###
 # Write .csv file
 ###
 def WriteCsvFile(fileName, *iterables):
+    '''Write .csv file.''';
     with open(fileName, 'w') as f:
         PrintNow('{} <<'.format(fileName));
         writer = CsvWriter(f, lineterminator = '\n');
@@ -5685,6 +6131,7 @@ def WriteCsvFile(fileName, *iterables):
 # Write ascii file
 ###
 def WriteFile(fileName, raw, display = True):
+    '''Write ascii file.''';
     with open(fileName, 'w') as f:
         if display:
             PrintNow('{} <<'.format(fileName));
@@ -5735,6 +6182,7 @@ za2Abundance = {
 # Convert ZA -> isotope string
 ###
 def Za2Isotope(za, texFormat = False):
+    '''Convert ZA -> isotope string.''';
     za = int(float(za));
     ###
     z, a = za // 1000, za % 1000;
@@ -5747,6 +6195,7 @@ def Za2Isotope(za, texFormat = False):
 # Extract molar mass for a given Z,A from xsdir
 ###
 def Za2MolarMass(xsDir):
+    '''Extract molar mass for a given Z,A from xsdir.''';
     words = xsDir.split();
     words = words[words.index('atomic') + 3 : words.index('directory') - 1];
     return {int(float(words[index])) : float(words[index + 1]) * neutronMass for index in range(0, len(words) - 1, 2)};
@@ -5754,6 +6203,7 @@ def Za2MolarMass(xsDir):
 # Convert ZA -> ZAm
 ###
 def Za2Zam(za):
+    '''Convert ZA -> ZAm.''';
     ###
     # Change natural carbon to carbon-12
     ###
@@ -5780,21 +6230,25 @@ def Za2Zam(za):
 # Is za an actinide
 ###
 def ZaIsActinide(za):
+    '''Return if isotope is an actinide.''';
     return za // 1000 > 88;
 ###
 # Extract temperature ID from ZAID
 ###
 def Zaid2Id(zaid):
+    '''Extract temperature ID from ZAID.''';
     return zaid.split('.')[1];
 ###
 # Convert a zaid string into an isotope string
 ###
 def Zaid2Isotope(zaid, texFormat = False):
+    '''Convert a zaid string into an isotope string.''';
     return Za2Isotope(Zaid2Za(zaid));
 ###
 # Extract molar mass for a given ZAID from xsdir
 ###
 def Zaid2MolarMass(zaid):
+    '''Extract molar mass for a given ZAID from xsdir.''';
     try:
         return za2MolarMass[Zaid2Za(zaid)];
     except KeyError:
@@ -5803,6 +6257,7 @@ def Zaid2MolarMass(zaid):
 # Extract temperature for a given ZAID from xsdir
 ###
 def Zaid2Temperature(xsDir):
+    '''Extract temperature for a given ZAID from xsdir.''';
     lines = xsDir.split('\n');
     ###
     # Find directory line index
@@ -5824,21 +6279,25 @@ def Zaid2Temperature(xsDir):
 # Convert ZAID -> ZA
 ###
 def Zaid2Za(zaid):
+    '''Convert ZAID -> ZA.''';
     return int(float(str(zaid).split('.')[0]));
 ###
 # Convert ZAID -> ZAm
 ###
 def Zaid2Zam(zaid):
+    '''Convert ZAID -> ZAm.''';
     return Za2Zam(Zaid2Za(zaid));
 ###
 # Convert ZAm -> ZA
 ###
 def Zam2Za(zam):
+    '''Convert ZAm -> ZA.''';
     return zam // 10;
 ###
 # Convert ZAm -> ZAID
 ###
 def Zam2Zaid(zam, suffix):
+    '''Convert ZAm -> ZAID.''';
     za, m = zam // 10, zam % 10;
     ###
     # Change carbon-12 to natural carbon
@@ -5866,6 +6325,7 @@ def Zam2Zaid(zam, suffix):
 # Initiate argument parser and add custom arguments
 ###
 def InterpretArguments():
+    '''Initiate argument parser and add custom arguments.''';
     ###
     # Script name
     ###

@@ -15,7 +15,9 @@ arguments.isQuiet = True;
 # 
 ###
 class PECSDepletion(DepletionCalculation):
+    '''PECS-syle replacement for DepletionCalculation.''';
     def __init__(self, originalTransportFile, depletionCalculationPickle, recycleIndex):
+        '''Construct a new instance.''';
         ###
         # Grab transport file
         ###
@@ -40,26 +42,33 @@ class PECSDepletion(DepletionCalculation):
         return;
     ###
     def __len__(self):
+        '''Return number of depletion steps.''';
         return len(self.GetParameter('depletionStepTimeIntervals'));
     ###
     # Generic getter methods
     ###
     def GetCellNumberBurnRate(self, cellNumber):
+        '''Return cell flux or power for current depletion step.''';
         return self.cellNumber2OrigenPowers[cellNumber][self.GetDepletionStep()];
     ###
     def GetCellNumber2Micros(self):
+        '''Return dictionary mapping cell to one-group microscopic cross-sections for current depletion step.''';
         return {cellNumber : micros[self.GetDepletionStep()] for cellNumber, micros in self.cellNumber2Micros.items()};
     ###
     def GetCellNumberMicros(self, cellNumber):
+        '''Return one-group microscopic cross-sections of a cell for this depletion step.''';
         return self.GetCellNumber2Micros()[cellNumber];
     ###
     def GetCellNumberVolume(self, cellNumber):
+        '''Return volume of a cell.''';
         return self.cellNumber2Volume[cellNumber];
     ###
     def GetCellNumber2Zam2Moles(self):
+        '''Return dictionary mapping cell to isotope to moles for current depletion step.''';
         return {cellNumber : zam2Moles[self.GetDepletionStep()] for cellNumber, zam2Moles in self.cellNumber2Zam2Moles.items()};
     ###
     def GetCellNumberZam2Moles(self, cellNumber):
+        '''Return dictionary mapping isotope to moles of a cell for this depletion step.''';
         try:
             ###
             # If TAPE7.OUT exists from a previous ORIGEN calculation,
@@ -73,29 +82,37 @@ class PECSDepletion(DepletionCalculation):
             return self.cellNumber2Zam2Moles[cellNumber][self.GetDepletionStep()];
     ###
     def GetDefaultPhotonLibraryFileName(self):
+        '''Return ORIGEN2 default photon library filename.''';
         return self.GetParameter('origenLibraryPathTemplate').format(self.GetParameter('defaultPhotonLibrary'));
     ###
     def GetDisplayFiles(self):
+        '''Return if file operations are verbose.''';
         return not arguments.isQuiet;
     ###
     def GetIsPickleTransmute(self):
+        '''Return if current depletion step is to be transmuted using pickles.''';
         return True;
     ###
     def GetParameters(self):
+        '''Return mocdown input file parameters.''';
         return self.parameters;
     ###
     def GetPickle(self):
+        '''Return depletion calculation pickle.''';
         return self.depletionCalculationPickle;
     ###
     def GetPickleFileName(self):
+        '''Return depletion calculation pickle filename.''';
         return self.pickleFileName;
     ###
     def GetRecycleIndex(self):
+        '''Return index of current recycling step.''';
         return self.recycleIndex;
     ###
     # Depletion methods
     ###
     def Deplete(self):
+        '''Execute PECS-style depletion.''';
         ###
         # Iterate over depletion steps
         ###
@@ -122,6 +139,7 @@ class PECSDepletion(DepletionCalculation):
         return;
     ###
     def PrepareDepletion(self, depletionCalculationPickle):
+        '''Populate default PECS-style depletion parameters.''';
         ###
         # Set depletion step
         ###
@@ -191,6 +209,7 @@ class PECSDepletion(DepletionCalculation):
         return;
     ###
     def TransmuteThreads(self, currentDir):
+        '''Execute transmute concurrently for each cell.''';
         PrintNow('> Executing {:d} concurrent ORIGEN thread(s) for {}'.format(self.GetParameter('numberOfOrigenThreads'), self.GetDepletionString()));
         ###
         # Multiple concurrent ORIGEN threads for each burn cell
@@ -219,6 +238,7 @@ class PECSDepletion(DepletionCalculation):
         return;
     ###
     def TransmuteThread(self, cellNumber, currentDir):
+        '''Execute transmute concurrently for a cell.''';
         ###
         # Move to temporary directory
         ###
@@ -244,6 +264,7 @@ class PECSDepletion(DepletionCalculation):
         return origenCalculation, ;
     ###
     def PrepareTransmute(self, cellNumber, tmpDir = './'):
+        '''Prepare transmute calculation.''';
         PrintNow('> Writing transmute input for cell #{:d}'.format(cellNumber));
         ###
         # origen (ORIGEN executable)
@@ -334,6 +355,7 @@ class PECSDepletion(DepletionCalculation):
         return micros;
     ###
     def Transmute(self, cellNumber, tmpDir = './', currentDir = ''):
+        '''Execute ORIGEN2.''';
         PrintNow('> Burning cell #{:d} at {:10.5E} {:s} in `{:s}\''.format(cellNumber, self.GetCellNumberBurnRate(cellNumber), self.GetParameter('burnUnits'), tmpDir));
         ###
         # Ensure necessary files do/don't exist
@@ -352,7 +374,9 @@ class PECSDepletion(DepletionCalculation):
 #
 ###
 class PECSCalculation(RecycleCalculation):
+    '''PECS-syle replacement for RecycleCalculation.''';
     def __init__(self, arguments):
+        '''Construct a new instance.''';
         ###
         # Populate
         ###
@@ -367,26 +391,33 @@ class PECSCalculation(RecycleCalculation):
     # Generic getter methods
     ###
     def GetBaseName(self):
+        '''Return base of MCNP input filename.''';
         return self.baseName;
     ###
     def GetDisplayFiles(self):
+        '''Return if file operations are verbose.''';
         return not arguments.isQuiet;
     ###
     def GetIsPickleTransmute(self):
+        '''PECS-style calculations only transmute!'''.
         return True;
     ###
     def GetOriginalPickle(self):
+        '''Return initial pickle.''';
         return self.originalPickle;
     ###
     def GetOriginalTransport(self):
+        '''Return initial MCNP input file.''';
         return self.originalTransportFile;
     ###
     def GetRecycleString(self):
+        '''Return string for current PECS-style recycling step.''';
         return 'PECS transmute-only recycle #{:d}'.format(self.GetRecycleIndex());
     ###
     # Population methods
     ###
     def Populate(self, arguments):
+        '''Populate.''';
         ###
         # Base name
         ###
@@ -411,6 +442,7 @@ class PECSCalculation(RecycleCalculation):
     # PECS methods
     ###
     def Equilibrate(self):
+        '''Execute PECS-style recycling.''';
         PrintNow('> {} will recycle to equilibrium'.format(__file__));
         ###
         pickle = self.GetOriginalPickle();
@@ -474,6 +506,7 @@ DepletionCalculationPickle.__sub__ = McnpInputFile.__sub__;
 # DepletionCalculationPickle.GetZa2Moles()
 ###
 def GetZa2Moles(self, cellNumbers = None, endOfCycle = False):
+    '''Override dicionary mapping isotope to moles.''';
     cellNumber2Zam2Moles = self.cellNumber2Zam2Moles;
     ###
     if cellNumbers is None:
@@ -503,6 +536,7 @@ DepletionCalculationPickle.GetZa2Moles = GetZa2Moles;
 # PECSDepletion.ProcessFuel()
 ###
 def ProcessFuel(self, previousPickle):
+    '''Override fuel processing.''';
     ###
     # Hard code the blanket and seed cell parameters
     ###

@@ -30,6 +30,7 @@ if 'Offline' in __file__.split('/')[-1].replace('.py', ''):
 # RBWR-AC recycling scheme
 ###
 def RbwrACRecycle(bocTransportFile, eocTransportFile):
+    '''Override fuel processing.''';
     ###
     # Hard code the blanket and seed cell parameters
     ###
@@ -166,6 +167,7 @@ ProcessFuel = lambda self : RbwrACRecycle(self.GetOriginalTransportFile(), McnpI
 # Process fuel
 ###
 def ProcessFuelOffline(bocFileName, eocFileName, newFileName):
+    '''Offline fuel processing helper.''';
     newInputFile = RbwrACRecycle(McnpInputFile(bocFileName), McnpInputFile(eocFileName));
     ###
     WriteFile(newFileName, newInputFile.GetNewputRaw());
