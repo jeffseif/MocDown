@@ -399,7 +399,7 @@ class PECSCalculation(RecycleCalculation):
         return not arguments.isQuiet;
     ###
     def GetIsPickleTransmute(self):
-        '''PECS-style calculations only transmute!'''.
+        '''PECS-style calculations only transmute!.''';
         return True;
     ###
     def GetOriginalPickle(self):
