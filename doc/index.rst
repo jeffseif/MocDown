@@ -17,19 +17,19 @@ Overview of MocDown
    :height: 200px
    :alt: MocDown's online thermo-fluids coupling accommodates the strong physical coupling between neutron and thermal fields in the RBWR-Th core.
 
-MocDown is a nuclear reactor core simulator.  It performs Monte Carlo depletion, using `MCNP6.1`_ for neutron transport and `ORIGEN2.2`_ for transmutation, just like the  `MONTEBURNS`_, `MOCUP`_, and `VESTA`_ codes.
+MocDown is a nuclear reactor core simulator.  It performs Monte Carlo depletion using `MCNP6.1`_ for neutron transport and `ORIGEN2.2`_ for transmutation--just like the  `MONTEBURNS`_, `MOCUP`_, and `VESTA`_ codes.
 
-MocDown is written in object-oriented `Python3`_.  It employs an accelerated equilibrium core composition search algorithm--ideal for systems with multi-recycling fuel cycles--and allows for loose, online coupling of thermo-fluids models.  Additionally, MocDown takes a simple approach towards neutron source rate scaling, which accounts for isotopic composition-dependent decay heat.
+MocDown is written in object-oriented `Python3`_.  It employs an accelerated equilibrium core composition search algorithm--ideal for systems with multi-recycling fuel cycles--and allows for loose, online coupling of thermo-fluids models.  MocDown also takes a simple approach towards neutron source rate scaling which accounts for isotopic composition-dependent decay heat.
 
 
 Access
 ------
 
-The MocDown official repository can be found at `github`_.  Its source code can be downloaded as a `tarball`_ or `zipfile`_ or it can be cloned with git via::
+The MocDown official code repository is hosted on `github`_.  From that repo, the MocDown source code can be downloaded as a `tarball`_ or `zipfile`_ or cloned with git::
 
   git clone git://github.com/jeffseif/MocDown.git ;
 
-MocDown has the following dependencies:
+Before it can be executed, MocDown has the following dependencies:
 
 - Python 3
 - numpy
@@ -40,7 +40,7 @@ MocDown has the following dependencies:
 Documentation
 -------------
 
-The following resources may be useful for users and developers.
+Users and developers should consult the following resources:
 
 .. toctree::
    :maxdepth: 1
@@ -53,14 +53,14 @@ The following resources may be useful for users and developers.
 How to cite
 -----------
 
-The best citation for MocDown from the :download:`proceedings <../lit/seifried2013aec.pdf>` of the `2013 SNA&MC`_ conference::
+The best source for citing MocDown is a :download:`paper<../lit/seifried2013aec.pdf>` from the proceedings of the `2013 SNA&MC`_ conference::
 
    J. E. Seifried, P. M. Gorman, J. L. Vujic, and E. Greenspan. Accelerated Equilibrium Core Composition Search Using a New MCNP-Based Simulator. Proceedings of the SNA&MC 2013 conference, Paris, France, October, 2013.
 
 Future work
 -----------
 
-MocDown can always be improved!  The following is a (not exhaustive) to-do list for code development.
+MocDown can always be improved!  The following is a (non-exhaustive) to-do list for code development.
 
 - Add unit tests
 - Finalize implementation of ParseMcnp.py
@@ -99,12 +99,13 @@ MocDown can always be improved!  The following is a (not exhaustive) to-do list 
 
 - Add a switch to perform transport even when it is not needed
 - Implement modified Euler predictor/corrector method of `Kotlyar, p. 9 <http://virtual.vtt.fi/virtual/montecarlo/mtg/2012_Madrid/Dan_Kotlyar.pdf>`_
+- Use __getstate__ and __setstate__ methods in creating pickles
 
 
 Acknowledgements
 ================
 
-MocDown was developed using funding received from the U.S. Department of Energy Office of Nuclear Energy's Nuclear Energy Univeersity Programs, U.S. Department of Energy National Nuclear Security Administration under Award Number DE-NA0000979, at the University of California, Berkeley.
+MocDown was developed using funding received from the U.S. Department of Energy Office of Nuclear Energy's Nuclear Energy Univeersity Programs and U.S. Department of Energy National Nuclear Security Administration under Award Number DE-NA0000979 at the `University of California, Berkeley Department of Nuclear Engineering`_.
 
 .. image:: ../img/neupLogo.jpg
    :height: 60px
@@ -142,3 +143,5 @@ Indices and tables
 .. _zipfile: https://github.com/jeffseif/MocDown/archive/master.zip
 
 .. _2013 SNA&MC: https://www.sfen.fr/SNA-and-MC-2013
+
+.. _University of California, Berkeley Department of Nuclear Engineering: http://www.nuc.berkeley.edu/

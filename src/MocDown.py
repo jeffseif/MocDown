@@ -3,7 +3,7 @@
 __author__ = 'Jeffrey Seifried';
 __email__ = 'jeffrey.seifried@gmail.com';
 __version__ = '1.0';
-__year__ = '2013';
+__year__ = '2014';
 
 ###
 ### Imports
@@ -6011,6 +6011,7 @@ def ReadXsDir(path = None, display = True):
             return ReadFile(path, display);
         except IOError:
             continue;
+    Warning('xsdir was not found.');
 ###
 # Parse MCNP5, MCNP6, or MCNPX input/output file
 ###
@@ -6196,6 +6197,11 @@ def Za2Isotope(za, texFormat = False):
 ###
 def Za2MolarMass(xsDir):
     '''Extract molar mass for a given Z,A from xsdir.''';
+    ###
+    # Kick out if xsDir is null
+    ###
+    if xsDir is None:
+        return {};
     words = xsDir.split();
     words = words[words.index('atomic') + 3 : words.index('directory') - 1];
     return {int(float(words[index])) : float(words[index + 1]) * neutronMass for index in range(0, len(words) - 1, 2)};

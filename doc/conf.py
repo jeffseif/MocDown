@@ -42,7 +42,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'MocDown'
-copyright = '2013, Jeffrey Edwin Seifried'
+copyright = '2014, Jeffrey Edwin Seifried'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the

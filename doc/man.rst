@@ -132,7 +132,7 @@ MocDown can be executed from the command-line with the following syntax::
     --isQuiet, -q         Hide file operation messages
     --isRestart, -r       Restart depletion from last pickle
   
-  Version 1.0 | Jeffrey Seifried 2013
+  Version 1.0 | Jeffrey Seifried 2014
 
 The `examples directory`_ within the MocDown repository provides several example MocDown simulation inputs.  The RBWR-Th simulations demonstrate the implementation of a single-channel thermo-fluids model and a fuel processing scheme.
 
