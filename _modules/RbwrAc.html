@@ -1,0 +1,270 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>RbwrAc &mdash; MocDown 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="MocDown 1.0 documentation" href="../index.html" />
+    <link rel="up" title="Module code" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">MocDown 1.0 documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for RbwrAc</h1><div class="highlight"><pre>
+<span class="c">#! /usr/bin/env python3</span>
+
+<span class="c">###</span>
+<span class="c">### Library imports</span>
+<span class="c">###</span>
+
+<span class="k">if</span> <span class="s">&#39;Offline&#39;</span> <span class="ow">in</span> <span class="n">__file__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;.py&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">):</span>
+    <span class="kn">from</span> <span class="nn">MocDown</span> <span class="kn">import</span> <span class="n">Array</span><span class="p">,</span>\
+                        <span class="n">Class</span><span class="p">,</span>\
+                        <span class="n">Exponent</span><span class="p">,</span>\
+                        <span class="n">LinearInterpolate</span><span class="p">,</span>\
+                        <span class="n">McnpInputFile</span><span class="p">,</span>\
+                        <span class="n">MocDownInputFile</span><span class="p">,</span>\
+                        <span class="n">Nan2Num</span><span class="p">,</span>\
+                        <span class="n">NaturalLogarithm</span><span class="p">,</span>\
+                        <span class="n">NonZero</span><span class="p">,</span>\
+                        <span class="n">PrintNow</span><span class="p">,</span>\
+                        <span class="n">WordArrange</span><span class="p">,</span>\
+                        <span class="n">WriteFile</span><span class="p">,</span>\
+                        <span class="n">ZaIsActinide</span><span class="p">,</span>\
+                        <span class="n">Zeros</span><span class="p">,</span>\
+                        <span class="n">avogadrosNumber</span><span class="p">,</span>\
+                        <span class="n">epsilon</span><span class="p">;</span>
+
+<span class="c">###</span>
+<span class="c">### Custom functions</span>
+<span class="c">###</span>
+
+<span class="c">###</span>
+<span class="c"># RBWR-AC recycling scheme</span>
+<span class="c">###</span>
+<div class="viewcode-block" id="RbwrACRecycle"><a class="viewcode-back" href="../lib.html#RbwrAc.RbwrACRecycle">[docs]</a><span class="k">def</span> <span class="nf">RbwrACRecycle</span><span class="p">(</span><span class="n">bocTransportFile</span><span class="p">,</span> <span class="n">eocTransportFile</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Override fuel processing.&#39;&#39;&#39;</span><span class="p">;</span>
+    <span class="c">###</span>
+    <span class="c"># Hard code the blanket and seed cell parameters</span>
+    <span class="c">###</span>
+    <span class="n">numberOfUpperBlanketCells</span> <span class="o">=</span> <span class="mi">8</span><span class="p">;</span>
+    <span class="n">numberOfUpperSeedCells</span> <span class="o">=</span> <span class="mi">12</span><span class="p">;</span>
+    <span class="n">numberOfInternalBlanketCells</span> <span class="o">=</span> <span class="mi">12</span><span class="p">;</span>
+    <span class="n">numberOfLowerSeedCells</span> <span class="o">=</span> <span class="mi">12</span><span class="p">;</span>
+    <span class="n">numberOfLowerBlanketCells</span> <span class="o">=</span> <span class="mi">12</span><span class="p">;</span>
+    <span class="c">###</span>
+    <span class="n">firstCellNumber</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span>
+    <span class="c">###</span>
+    <span class="c"># Define the blanket and seed cell numbers</span>
+    <span class="c">###</span>
+    <span class="n">previous</span> <span class="o">=</span> <span class="n">firstCellNumber</span><span class="p">;</span>
+    <span class="n">upperBlanketCellNumbers</span>    <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">previous</span><span class="p">,</span> <span class="n">previous</span> <span class="o">+</span> <span class="n">numberOfUpperBlanketCells</span><span class="p">));</span>
+    <span class="n">previous</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">upperBlanketCellNumbers</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="n">upperSeedCellNumbers</span>       <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">previous</span><span class="p">,</span> <span class="n">previous</span> <span class="o">+</span> <span class="n">numberOfUpperSeedCells</span><span class="p">));</span>
+    <span class="n">previous</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">upperBlanketCellNumbers</span> <span class="o">+</span> <span class="n">upperSeedCellNumbers</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="n">internalBlanketCellNumbers</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">previous</span><span class="p">,</span> <span class="n">previous</span> <span class="o">+</span> <span class="n">numberOfInternalBlanketCells</span><span class="p">));</span>
+    <span class="n">previous</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">upperBlanketCellNumbers</span> <span class="o">+</span> <span class="n">upperSeedCellNumbers</span> <span class="o">+</span> <span class="n">internalBlanketCellNumbers</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="n">lowerSeedCellNumbers</span>       <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">previous</span><span class="p">,</span> <span class="n">previous</span> <span class="o">+</span> <span class="n">numberOfLowerSeedCells</span><span class="p">));</span>
+    <span class="n">previous</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">upperBlanketCellNumbers</span> <span class="o">+</span> <span class="n">upperSeedCellNumbers</span> <span class="o">+</span> <span class="n">internalBlanketCellNumbers</span> <span class="o">+</span> <span class="n">lowerSeedCellNumbers</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="n">lowerBlanketCellNumbers</span>    <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">previous</span><span class="p">,</span> <span class="n">previous</span> <span class="o">+</span> <span class="n">numberOfLowerBlanketCells</span><span class="p">));</span>
+    <span class="c">###</span>
+    <span class="n">upperSeedVolumeFraction</span> <span class="o">=</span> <span class="mi">28</span> <span class="o">/</span> <span class="p">(</span><span class="mi">28</span> <span class="o">+</span> <span class="mf">19.3</span><span class="p">);</span>
+    <span class="n">lowerSeedVolumeFraction</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">upperSeedVolumeFraction</span><span class="p">;</span>
+    <span class="c">###</span>
+    <span class="c"># Isotopic ZA</span>
+    <span class="c">###</span>
+    <span class="n">oxygen</span> <span class="o">=</span> <span class="mi">8016</span><span class="p">;</span>
+    <span class="n">depletedUranium</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="mi">92235</span> <span class="p">:</span> <span class="mf">2.5e-3</span><span class="p">,</span>
+        <span class="mi">92238</span> <span class="p">:</span> <span class="mi">1</span> <span class="o">-</span> <span class="mf">2.5e-3</span><span class="p">,</span>
+        <span class="p">};</span>
+    <span class="c">###</span>
+    <span class="c"># Calculate the number of BOEC seed heavy-metal moles;</span>
+    <span class="c"># This number is conserved across recycles</span>
+    <span class="c">###</span>
+    <span class="n">chargeMoles</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">moles</span> <span class="k">for</span> <span class="n">cellNumber</span> <span class="ow">in</span> <span class="n">upperSeedCellNumbers</span> <span class="o">+</span> <span class="n">lowerSeedCellNumbers</span> <span class="k">for</span> <span class="n">za</span><span class="p">,</span> <span class="n">moles</span> <span class="ow">in</span> <span class="n">bocTransportFile</span><span class="o">.</span><span class="n">FindCell</span><span class="p">(</span><span class="n">cellNumber</span><span class="p">)</span><span class="o">.</span><span class="n">GetZa2Moles</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">ZaIsActinide</span><span class="p">(</span><span class="n">za</span><span class="p">));</span>
+    <span class="c">###</span>
+    <span class="c"># Construct the seed charge:</span>
+    <span class="c"># First, EOEC heavy metal moles are accumulated;</span>
+    <span class="c"># Second, any mole deficit or surplus is made up with uranium</span>
+    <span class="c"># Third, add twice as many oxygen moles as heavy metal moles</span>
+    <span class="c">###</span>
+    <span class="n">za2ChargeMoles</span> <span class="o">=</span> <span class="p">{};</span>
+    <span class="k">for</span> <span class="n">cellNumber</span> <span class="ow">in</span> <span class="n">upperBlanketCellNumbers</span> <span class="o">+</span> <span class="n">upperSeedCellNumbers</span> <span class="o">+</span> <span class="n">internalBlanketCellNumbers</span> <span class="o">+</span> <span class="n">lowerSeedCellNumbers</span> <span class="o">+</span> <span class="n">lowerBlanketCellNumbers</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">za</span><span class="p">,</span> <span class="n">moles</span> <span class="ow">in</span> <span class="n">eocTransportFile</span><span class="o">.</span><span class="n">FindCell</span><span class="p">(</span><span class="n">cellNumber</span><span class="p">)</span><span class="o">.</span><span class="n">GetZa2Moles</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">ZaIsActinide</span><span class="p">(</span><span class="n">za</span><span class="p">):</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">za2ChargeMoles</span><span class="p">[</span><span class="n">za</span><span class="p">]</span> <span class="o">+=</span> <span class="n">moles</span><span class="p">;</span>
+                <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                    <span class="n">za2ChargeMoles</span><span class="p">[</span><span class="n">za</span><span class="p">]</span> <span class="o">=</span> <span class="n">moles</span><span class="p">;</span>
+    <span class="c">###</span>
+    <span class="n">deviation</span> <span class="o">=</span> <span class="n">chargeMoles</span> <span class="o">-</span> <span class="nb">sum</span><span class="p">(</span><span class="n">za2ChargeMoles</span><span class="o">.</span><span class="n">values</span><span class="p">());</span>
+    <span class="n">uranium2Fraction</span> <span class="o">=</span> <span class="p">{</span><span class="n">za</span> <span class="p">:</span> <span class="n">moles</span> <span class="k">for</span> <span class="n">za</span><span class="p">,</span> <span class="n">moles</span> <span class="ow">in</span> <span class="n">za2ChargeMoles</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="mi">92</span> <span class="o">==</span> <span class="n">za</span> <span class="o">//</span> <span class="mi">1000</span><span class="p">};</span>
+    <span class="n">uranium2Fraction</span> <span class="o">=</span> <span class="p">{</span><span class="n">za</span> <span class="p">:</span> <span class="n">moles</span> <span class="o">/</span> <span class="nb">sum</span><span class="p">(</span><span class="n">uranium2Fraction</span><span class="o">.</span><span class="n">values</span><span class="p">())</span> <span class="k">for</span> <span class="n">za</span><span class="p">,</span> <span class="n">moles</span> <span class="ow">in</span> <span class="n">uranium2Fraction</span><span class="o">.</span><span class="n">items</span><span class="p">()};</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">za</span><span class="p">,</span> <span class="n">fraction</span> <span class="ow">in</span> <span class="n">uranium2Fraction</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">za2ChargeMoles</span><span class="p">[</span><span class="n">za</span><span class="p">]</span> <span class="o">+=</span> <span class="n">deviation</span> <span class="o">*</span> <span class="n">fraction</span><span class="p">;</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">za</span><span class="p">,</span> <span class="n">fraction</span> <span class="ow">in</span> <span class="n">uranium2Fraction</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">za2ChargeMoles</span><span class="p">[</span><span class="n">za</span><span class="p">]</span> <span class="o">=</span> <span class="n">deviation</span> <span class="o">*</span> <span class="n">fraction</span><span class="p">;</span>
+    <span class="k">assert</span><span class="p">(</span><span class="nb">all</span><span class="p">(</span><span class="n">za2ChargeMoles</span><span class="p">[</span><span class="n">za</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">za</span> <span class="ow">in</span> <span class="n">depletedUranium</span><span class="p">));</span>
+    <span class="c">###</span>
+    <span class="n">za2ChargeMoles</span><span class="p">[</span><span class="n">oxygen</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">chargeMoles</span><span class="p">;</span>
+    <span class="c">###</span>
+    <span class="c"># Distribute the seed charge:</span>
+    <span class="c"># First, split moles evenly between seed cells</span>
+    <span class="c"># Second, match BOEC moles for each cell by adjusting depleted urania moles</span>
+    <span class="c">###</span>
+    <span class="n">cellNumber2Za2ChargeMoles</span> <span class="o">=</span> <span class="p">{</span><span class="n">cellNumber</span> <span class="p">:</span> <span class="p">{</span><span class="n">za</span> <span class="p">:</span> <span class="n">moles</span> <span class="o">*</span> <span class="n">upperSeedVolumeFraction</span> <span class="o">/</span> <span class="n">numberOfUpperSeedCells</span> <span class="k">for</span> <span class="n">za</span><span class="p">,</span> <span class="n">moles</span> <span class="ow">in</span> <span class="n">za2ChargeMoles</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span> <span class="k">for</span> <span class="n">cellNumber</span> <span class="ow">in</span> <span class="n">upperSeedCellNumbers</span><span class="p">};</span>
+    <span class="n">cellNumber2Za2ChargeMoles</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">cellNumber</span> <span class="p">:</span> <span class="p">{</span><span class="n">za</span> <span class="p">:</span> <span class="n">moles</span> <span class="o">*</span> <span class="n">lowerSeedVolumeFraction</span> <span class="o">/</span> <span class="n">numberOfUpperSeedCells</span> <span class="k">for</span> <span class="n">za</span><span class="p">,</span> <span class="n">moles</span> <span class="ow">in</span> <span class="n">za2ChargeMoles</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span> <span class="k">for</span> <span class="n">cellNumber</span> <span class="ow">in</span> <span class="n">lowerSeedCellNumbers</span><span class="p">});</span>
+    <span class="c">###</span>
+    <span class="k">for</span> <span class="n">cellNumber</span> <span class="ow">in</span> <span class="n">upperSeedCellNumbers</span> <span class="o">+</span> <span class="n">lowerSeedCellNumbers</span><span class="p">:</span>
+        <span class="n">bocCell</span> <span class="o">=</span> <span class="n">bocTransportFile</span><span class="o">.</span><span class="n">FindCell</span><span class="p">(</span><span class="n">cellNumber</span><span class="p">);</span>
+        <span class="n">deviation</span> <span class="o">=</span> <span class="n">bocCell</span><span class="o">.</span><span class="n">GetMoles</span><span class="p">()</span> <span class="o">-</span> <span class="nb">sum</span><span class="p">(</span><span class="n">cellNumber2Za2ChargeMoles</span><span class="p">[</span><span class="n">cellNumber</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">());</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">za</span><span class="p">,</span> <span class="n">fraction</span> <span class="ow">in</span> <span class="n">depletedUranium</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">cellNumber2Za2ChargeMoles</span><span class="p">[</span><span class="n">cellNumber</span><span class="p">][</span><span class="n">za</span><span class="p">]</span> <span class="o">+=</span> <span class="n">deviation</span> <span class="o">*</span> <span class="n">fraction</span> <span class="o">*</span> <span class="mi">1</span> <span class="o">/</span> <span class="mi">3</span><span class="p">;</span>
+            <span class="n">cellNumber2Za2ChargeMoles</span><span class="p">[</span><span class="n">cellNumber</span><span class="p">][</span><span class="n">oxygen</span><span class="p">]</span> <span class="o">+=</span> <span class="n">deviation</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">/</span> <span class="mi">3</span><span class="p">;</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">za</span><span class="p">,</span> <span class="n">fraction</span> <span class="ow">in</span> <span class="n">depletedUranium</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">cellNumber2Za2ChargeMoles</span><span class="p">[</span><span class="n">cellNumber</span><span class="p">][</span><span class="n">za</span><span class="p">]</span> <span class="o">=</span> <span class="n">deviation</span> <span class="o">*</span> <span class="n">fraction</span> <span class="o">*</span> <span class="mi">1</span> <span class="o">/</span> <span class="mi">3</span><span class="p">;</span>
+            <span class="n">cellNumber2Za2ChargeMoles</span><span class="p">[</span><span class="n">cellNumber</span><span class="p">][</span><span class="n">oxygen</span><span class="p">]</span> <span class="o">=</span> <span class="n">deviation</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">/</span> <span class="mi">3</span><span class="p">;</span>
+        <span class="k">assert</span><span class="p">(</span><span class="nb">all</span><span class="p">(</span><span class="n">cellNumber2Za2ChargeMoles</span><span class="p">[</span><span class="n">cellNumber</span><span class="p">][</span><span class="n">za</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">za</span> <span class="ow">in</span> <span class="n">depletedUranium</span><span class="p">));</span>
+    <span class="c">###</span>
+    <span class="c"># Distribute the blanket charge:</span>
+    <span class="c"># Simply grab the BOEC moles</span>
+    <span class="c">###</span>
+    <span class="n">cellNumber2Za2ChargeMoles</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">cellNumber</span> <span class="p">:</span> <span class="n">bocTransportFile</span><span class="o">.</span><span class="n">FindCell</span><span class="p">(</span><span class="n">cellNumber</span><span class="p">)</span><span class="o">.</span><span class="n">GetZa2Moles</span><span class="p">()</span> <span class="k">for</span> <span class="n">cellNumber</span> <span class="ow">in</span> <span class="n">upperBlanketCellNumbers</span> <span class="o">+</span> <span class="n">internalBlanketCellNumbers</span> <span class="o">+</span> <span class="n">lowerBlanketCellNumbers</span><span class="p">});</span>
+    <span class="c">###</span>
+    <span class="c"># Recharge cells</span>
+    <span class="c">###</span>
+    <span class="k">for</span> <span class="n">cellNumber</span> <span class="ow">in</span> <span class="n">upperBlanketCellNumbers</span> <span class="o">+</span> <span class="n">upperSeedCellNumbers</span> <span class="o">+</span> <span class="n">internalBlanketCellNumbers</span> <span class="o">+</span> <span class="n">lowerSeedCellNumbers</span> <span class="o">+</span> <span class="n">lowerBlanketCellNumbers</span><span class="p">:</span>
+        <span class="n">za2ChargeMoles</span> <span class="o">=</span> <span class="n">cellNumber2Za2ChargeMoles</span><span class="p">[</span><span class="n">cellNumber</span><span class="p">];</span>
+        <span class="c">###</span>
+        <span class="c"># Replace cell cards</span>
+        <span class="c">###</span>
+        <span class="n">cell</span> <span class="o">=</span> <span class="n">eocTransportFile</span><span class="o">.</span><span class="n">FindCell</span><span class="p">(</span><span class="n">cellNumber</span><span class="p">);</span>
+        <span class="c">###</span>
+        <span class="n">numberDensity</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">za2ChargeMoles</span><span class="o">.</span><span class="n">values</span><span class="p">())</span> <span class="o">/</span> <span class="n">cell</span><span class="o">.</span><span class="n">GetVolume</span><span class="p">()</span> <span class="o">*</span> <span class="n">avogadrosNumber</span><span class="p">;</span>
+        <span class="n">cellCard</span> <span class="o">=</span> <span class="n">cell</span><span class="o">.</span><span class="n">GetMaterialDensityRegex</span><span class="p">()</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">&#39;{:+10.7f}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">numberDensity</span><span class="p">),</span> <span class="n">cell</span><span class="o">.</span><span class="n">GetRaw</span><span class="p">());</span>
+        <span class="c">###</span>
+        <span class="n">eocTransportFile</span><span class="o">.</span><span class="n">ReplaceNewputCard</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">cellCard</span><span class="p">);</span>
+        <span class="c">###</span>
+        <span class="c"># Replace material cards</span>
+        <span class="c">###</span>
+        <span class="n">material</span> <span class="o">=</span> <span class="n">eocTransportFile</span><span class="o">.</span><span class="n">FindCellMaterial</span><span class="p">(</span><span class="n">cellNumber</span><span class="p">);</span>
+        <span class="c">###</span>
+        <span class="n">suffix</span> <span class="o">=</span> <span class="n">cell</span><span class="o">.</span><span class="n">GetSuffix</span><span class="p">();</span>
+        <span class="n">totalMoles</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">za2ChargeMoles</span><span class="o">.</span><span class="n">values</span><span class="p">())</span> <span class="o">/</span> <span class="mi">3</span><span class="p">;</span>
+        <span class="n">zaid2AtomFraction</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;{}.{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">za</span><span class="p">,</span> <span class="n">suffix</span><span class="p">)</span> <span class="p">:</span> <span class="n">moles</span> <span class="o">/</span> <span class="n">totalMoles</span> <span class="k">for</span> <span class="n">za</span><span class="p">,</span> <span class="n">moles</span> <span class="ow">in</span> <span class="n">za2ChargeMoles</span><span class="o">.</span><span class="n">items</span><span class="p">()};</span>
+        <span class="n">materialCard</span> <span class="o">=</span> <span class="n">WordArrange</span><span class="p">(</span><span class="n">words</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;{:&gt;10} {:+.5E}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">zaid</span><span class="p">,</span> <span class="n">atomFraction</span><span class="p">)</span> <span class="k">for</span> <span class="n">zaid</span><span class="p">,</span> <span class="n">atomFraction</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">zaid2AtomFraction</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">item</span><span class="p">:</span> <span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">item</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">reverse</span> <span class="o">=</span> <span class="bp">True</span><span class="p">)),</span> <span class="n">prefix</span> <span class="o">=</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">m{:&lt;6d}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">material</span><span class="o">.</span><span class="n">GetNumber</span><span class="p">()),</span> <span class="n">indent</span> <span class="o">=</span> <span class="mi">8</span><span class="p">);</span>
+        <span class="c">###</span>
+        <span class="n">eocTransportFile</span><span class="o">.</span><span class="n">ReplaceNewputCard</span><span class="p">(</span><span class="n">material</span><span class="p">,</span> <span class="n">materialCard</span><span class="p">);</span>
+    <span class="c">###</span>
+    <span class="k">return</span> <span class="n">eocTransportFile</span><span class="p">;</span>
+
+<span class="c">###</span>
+<span class="c">### Replacement for DepletionCalculation methods</span>
+<span class="c">###</span>
+
+<span class="c">###</span>
+<span class="c"># DepletionCalculation.ProcessFuel()</span>
+<span class="c">###</span></div>
+<span class="n">ProcessFuel</span> <span class="o">=</span> <span class="k">lambda</span> <span class="bp">self</span> <span class="p">:</span> <span class="n">RbwrACRecycle</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">GetOriginalTransportFile</span><span class="p">(),</span> <span class="n">McnpInputFile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">GetFileName</span><span class="p">(</span><span class="s">&#39;i&#39;</span><span class="p">,</span> <span class="n">withoutTH</span> <span class="o">=</span> <span class="bp">True</span><span class="p">)));</span>
+
+<span class="c">###</span>
+<span class="c">### Offline helper functions</span>
+<span class="c">###</span>
+
+<span class="c">###</span>
+<span class="c"># Process fuel</span>
+<span class="c">###</span>
+<div class="viewcode-block" id="ProcessFuelOffline"><a class="viewcode-back" href="../lib.html#RbwrAc.ProcessFuelOffline">[docs]</a><span class="k">def</span> <span class="nf">ProcessFuelOffline</span><span class="p">(</span><span class="n">bocFileName</span><span class="p">,</span> <span class="n">eocFileName</span><span class="p">,</span> <span class="n">newFileName</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Offline fuel processing helper.&#39;&#39;&#39;</span><span class="p">;</span>
+    <span class="n">newInputFile</span> <span class="o">=</span> <span class="n">RbwrACRecycle</span><span class="p">(</span><span class="n">McnpInputFile</span><span class="p">(</span><span class="n">bocFileName</span><span class="p">),</span> <span class="n">McnpInputFile</span><span class="p">(</span><span class="n">eocFileName</span><span class="p">));</span>
+    <span class="c">###</span>
+    <span class="n">WriteFile</span><span class="p">(</span><span class="n">newFileName</span><span class="p">,</span> <span class="n">newInputFile</span><span class="o">.</span><span class="n">GetNewputRaw</span><span class="p">());</span>
+    <span class="c">###</span>
+    <span class="k">return</span><span class="p">;</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">MocDown 1.0 documentation</a> &raquo;</li>
+          <li><a href="index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Jeffrey Edwin Seifried.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

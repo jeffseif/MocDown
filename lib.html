@@ -1,0 +1,629 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Source code documentation for MocDown extensions &mdash; MocDown 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="MocDown 1.0 documentation" href="index.html" />
+    <link rel="prev" title="Source code documentation for MocDown" href="src.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="src.html" title="Source code documentation for MocDown"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">MocDown 1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="source-code-documentation-for-mocdown-extensions">
+<h1>Source code documentation for MocDown extensions<a class="headerlink" href="#source-code-documentation-for-mocdown-extensions" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="rbwrth">
+<h2>RbwrTh<a class="headerlink" href="#rbwrth" title="Permalink to this headline">¶</a></h2>
+<p>RbwrTh.py is a MocDown external library.  It modifies the default MocDown coolant update calculation, fuel processing, and cycle multiplication factor methods for simulation of the RBWR-Th core design.</p>
+<span class="target" id="module-RbwrTh"></span><dl class="class">
+<dt id="RbwrTh.BoilingCalculation">
+<em class="property">class </em><tt class="descclassname">RbwrTh.</tt><tt class="descname">BoilingCalculation</tt><big>(</big><em>cellNumbers</em>, <em>cellNumber2PreviousMassDensity</em>, <em>cellNumber2MassDensity</em>, <em>axialPowers</em>, <em>axialQualitys</em>, <em>axialVoidFractions</em>, <em>finePositionCPRs</em>, <em>minimumCriticalPowerRatio</em>, <em>minimumCriticalPowerRatioQuality</em>, <em>minimumCriticalPowerRatioLocation</em>, <em>criticalPowerRatioLimit</em>, <em>flowLengths</em>, <em>axialPressureDrops</em>, <em>transportOutputFile</em><big>)</big><a class="reference internal" href="_modules/RbwrTh.html#BoilingCalculation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RbwrTh.BoilingCalculation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Coolant density calculation for a single boiling channel.</p>
+<dl class="method">
+<dt id="RbwrTh.BoilingCalculation.GetCellNumberAccumulatedFlowLength">
+<tt class="descname">GetCellNumberAccumulatedFlowLength</tt><big>(</big><em>cellNumber</em><big>)</big><a class="reference internal" href="_modules/RbwrTh.html#BoilingCalculation.GetCellNumberAccumulatedFlowLength"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RbwrTh.BoilingCalculation.GetCellNumberAccumulatedFlowLength" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return accumulated active length of a cell.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="RbwrTh.BoilingCalculation.GetCellNumberFlowLength">
+<tt class="descname">GetCellNumberFlowLength</tt><big>(</big><em>cellNumber</em><big>)</big><a class="reference internal" href="_modules/RbwrTh.html#BoilingCalculation.GetCellNumberFlowLength"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RbwrTh.BoilingCalculation.GetCellNumberFlowLength" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return active length of a cell.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="RbwrTh.BoilingCalculation.GetCellNumberLinearHeatRate">
+<tt class="descname">GetCellNumberLinearHeatRate</tt><big>(</big><em>cellNumber</em><big>)</big><a class="reference internal" href="_modules/RbwrTh.html#BoilingCalculation.GetCellNumberLinearHeatRate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RbwrTh.BoilingCalculation.GetCellNumberLinearHeatRate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return linear heat rate for a cell.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="RbwrTh.BoilingCalculation.GetCellNumberMassDensity">
+<tt class="descname">GetCellNumberMassDensity</tt><big>(</big><em>cellNumber</em><big>)</big><a class="reference internal" href="_modules/RbwrTh.html#BoilingCalculation.GetCellNumberMassDensity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RbwrTh.BoilingCalculation.GetCellNumberMassDensity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return current mass density for a cell.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="RbwrTh.BoilingCalculation.GetCellNumberPressureDrop">
+<tt class="descname">GetCellNumberPressureDrop</tt><big>(</big><em>cellNumber</em><big>)</big><a class="reference internal" href="_modules/RbwrTh.html#BoilingCalculation.GetCellNumberPressureDrop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RbwrTh.BoilingCalculation.GetCellNumberPressureDrop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return pressure drop over a cell.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="RbwrTh.BoilingCalculation.GetCellNumberPreviousMassDensity">
+<tt class="descname">GetCellNumberPreviousMassDensity</tt><big>(</big><em>cellNumber</em><big>)</big><a class="reference internal" href="_modules/RbwrTh.html#BoilingCalculation.GetCellNumberPreviousMassDensity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RbwrTh.BoilingCalculation.GetCellNumberPreviousMassDensity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return previous mass density for a cell.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="RbwrTh.BoilingCalculation.GetCellNumberQuality">
+<tt class="descname">GetCellNumberQuality</tt><big>(</big><em>cellNumber</em><big>)</big><a class="reference internal" href="_modules/RbwrTh.html#BoilingCalculation.GetCellNumberQuality"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RbwrTh.BoilingCalculation.GetCellNumberQuality" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return quality for a cell.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="RbwrTh.BoilingCalculation.GetCellNumberThermalPower">
+<tt class="descname">GetCellNumberThermalPower</tt><big>(</big><em>cellNumber</em><big>)</big><a class="reference internal" href="_modules/RbwrTh.html#BoilingCalculation.GetCellNumberThermalPower"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RbwrTh.BoilingCalculation.GetCellNumberThermalPower" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return thermal power for a cell.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="RbwrTh.BoilingCalculation.GetCellNumberVoidFraction">
+<tt class="descname">GetCellNumberVoidFraction</tt><big>(</big><em>cellNumber</em><big>)</big><a class="reference internal" href="_modules/RbwrTh.html#BoilingCalculation.GetCellNumberVoidFraction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RbwrTh.BoilingCalculation.GetCellNumberVoidFraction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return void fraction for a cell.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="RbwrTh.BoilingCalculation.GetCellNumbers">
+<tt class="descname">GetCellNumbers</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/RbwrTh.html#BoilingCalculation.GetCellNumbers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RbwrTh.BoilingCalculation.GetCellNumbers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return cell numbers.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="RbwrTh.BoilingCalculation.GetCriticalPowerRatioLimit">
+<tt class="descname">GetCriticalPowerRatioLimit</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/RbwrTh.html#BoilingCalculation.GetCriticalPowerRatioLimit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RbwrTh.BoilingCalculation.GetCriticalPowerRatioLimit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return critical power ratio limit.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="RbwrTh.BoilingCalculation.GetFinePositionCPRs">
+<tt class="descname">GetFinePositionCPRs</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/RbwrTh.html#BoilingCalculation.GetFinePositionCPRs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RbwrTh.BoilingCalculation.GetFinePositionCPRs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return list of critical power ratios.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="RbwrTh.BoilingCalculation.GetMinimumCriticalPowerRatio">
+<tt class="descname">GetMinimumCriticalPowerRatio</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/RbwrTh.html#BoilingCalculation.GetMinimumCriticalPowerRatio"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RbwrTh.BoilingCalculation.GetMinimumCriticalPowerRatio" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return magnitude of minimum critical power ratio.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="RbwrTh.BoilingCalculation.GetMinimumCriticalPowerRatioLocation">
+<tt class="descname">GetMinimumCriticalPowerRatioLocation</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/RbwrTh.html#BoilingCalculation.GetMinimumCriticalPowerRatioLocation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RbwrTh.BoilingCalculation.GetMinimumCriticalPowerRatioLocation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return location of minimum critical power ratio.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="RbwrTh.BoilingCalculation.GetMinimumCriticalPowerRatioQuality">
+<tt class="descname">GetMinimumCriticalPowerRatioQuality</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/RbwrTh.html#BoilingCalculation.GetMinimumCriticalPowerRatioQuality"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RbwrTh.BoilingCalculation.GetMinimumCriticalPowerRatioQuality" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return quality of minimum critical power ratio.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="RbwrTh.BoilingCalculation.GetMultiplicationFactor">
+<tt class="descname">GetMultiplicationFactor</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/RbwrTh.html#BoilingCalculation.GetMultiplicationFactor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RbwrTh.BoilingCalculation.GetMultiplicationFactor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return multiplication factor.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="RbwrTh.BoilingCalculation.GetMultiplicationFactorSigma">
+<tt class="descname">GetMultiplicationFactorSigma</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/RbwrTh.html#BoilingCalculation.GetMultiplicationFactorSigma"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RbwrTh.BoilingCalculation.GetMultiplicationFactorSigma" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return multiplication factor standard deviation.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="RbwrTh.BoilingCalculation.GetOutletCellNumber">
+<tt class="descname">GetOutletCellNumber</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/RbwrTh.html#BoilingCalculation.GetOutletCellNumber"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RbwrTh.BoilingCalculation.GetOutletCellNumber" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return outlet cell number.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="RbwrTh.BoilingCalculation.GetPressureDrop">
+<tt class="descname">GetPressureDrop</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/RbwrTh.html#BoilingCalculation.GetPressureDrop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RbwrTh.BoilingCalculation.GetPressureDrop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return total pressure drop.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="RbwrTh.BoilingCalculation.GetUpdateCellNumbers">
+<tt class="descname">GetUpdateCellNumbers</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/RbwrTh.html#BoilingCalculation.GetUpdateCellNumbers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RbwrTh.BoilingCalculation.GetUpdateCellNumbers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return cells to be updated.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="RbwrTh.CriticalPowerRatioMITCISE4">
+<tt class="descclassname">RbwrTh.</tt><tt class="descname">CriticalPowerRatioMITCISE4</tt><big>(</big><em>steam</em>, <em>axialPowers</em>, <em>flowLengths</em>, <em>endIndex</em><big>)</big><a class="reference internal" href="_modules/RbwrTh.html#CriticalPowerRatioMITCISE4"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RbwrTh.CriticalPowerRatioMITCISE4" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform MIT-modified CISE-4 critical power ratio correlation.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="RbwrTh.GetLibraryParametersConverters">
+<tt class="descclassname">RbwrTh.</tt><tt class="descname">GetLibraryParametersConverters</tt><big>(</big><em>self</em><big>)</big><a class="reference internal" href="_modules/RbwrTh.html#GetLibraryParametersConverters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RbwrTh.GetLibraryParametersConverters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return default values and parsing functions for RBWR-Th parameters.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="RbwrTh.MultiBatchCoreKeff">
+<tt class="descclassname">RbwrTh.</tt><tt class="descname">MultiBatchCoreKeff</tt><big>(</big><em>times</em>, <em>values</em>, <em>order=4</em>, <em>weights=None</em>, <em>timeSteps=500</em>, <em>batches=5</em><big>)</big><a class="headerlink" href="#RbwrTh.MultiBatchCoreKeff" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform a harmonic mean for a time-series.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="RbwrTh.MultiBatchCoreKeffEoc">
+<tt class="descclassname">RbwrTh.</tt><tt class="descname">MultiBatchCoreKeffEoc</tt><big>(</big><em>self</em><big>)</big><a class="reference internal" href="_modules/RbwrTh.html#MultiBatchCoreKeffEoc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RbwrTh.MultiBatchCoreKeffEoc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return batch-averaged EOC multiplication factor.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="RbwrTh.MultiBatchCoreKeffEocCycleStretch">
+<tt class="descclassname">RbwrTh.</tt><tt class="descname">MultiBatchCoreKeffEocCycleStretch</tt><big>(</big><em>times</em>, <em>values</em>, <em>order=4</em>, <em>minimum=0.0</em>, <em>maximum=2.0</em>, <em>number=500</em><big>)</big><a class="reference internal" href="_modules/RbwrTh.html#MultiBatchCoreKeffEocCycleStretch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RbwrTh.MultiBatchCoreKeffEocCycleStretch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return batch-averaged EOC multiplication factors for many batch lengths.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="RbwrTh.MultiBatchHarmonicMean">
+<tt class="descclassname">RbwrTh.</tt><tt class="descname">MultiBatchHarmonicMean</tt><big>(</big><em>times</em>, <em>values</em>, <em>order=4</em>, <em>weights=None</em>, <em>timeSteps=500</em>, <em>batches=5</em><big>)</big><a class="reference internal" href="_modules/RbwrTh.html#MultiBatchHarmonicMean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RbwrTh.MultiBatchHarmonicMean" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform a harmonic mean for a time-series.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="RbwrTh.MultiplicationFactor">
+<tt class="descclassname">RbwrTh.</tt><tt class="descname">MultiplicationFactor</tt><big>(</big><em>self</em><big>)</big><a class="headerlink" href="#RbwrTh.MultiplicationFactor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return batch-averaged EOC multiplication factor.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="RbwrTh.PolynomialInterpolation">
+<tt class="descclassname">RbwrTh.</tt><tt class="descname">PolynomialInterpolation</tt><big>(</big><em>x</em>, <em>xp</em>, <em>yp</em>, <em>order</em><big>)</big><a class="reference internal" href="_modules/RbwrTh.html#PolynomialInterpolation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RbwrTh.PolynomialInterpolation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform polynomial interpolation.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="RbwrTh.PressureDropEPRI">
+<tt class="descclassname">RbwrTh.</tt><tt class="descname">PressureDropEPRI</tt><big>(</big><em>steam</em>, <em>quality</em>, <em>voidFraction</em>, <em>massDensity</em>, <em>flowLengths</em><big>)</big><a class="reference internal" href="_modules/RbwrTh.html#PressureDropEPRI"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RbwrTh.PressureDropEPRI" title="Permalink to this definition">¶</a></dt>
+<dd><p>EPRI pressure drop correlation.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="RbwrTh.PressureDropTwoPhase">
+<tt class="descclassname">RbwrTh.</tt><tt class="descname">PressureDropTwoPhase</tt><big>(</big><em>steam</em>, <em>quality</em>, <em>voidFraction</em>, <em>massDensity</em>, <em>flowLengths</em>, <em>twoPhaseFrictionMultiplier</em><big>)</big><a class="reference internal" href="_modules/RbwrTh.html#PressureDropTwoPhase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RbwrTh.PressureDropTwoPhase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform generic two-phase pressure drop correlation.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="RbwrTh.ProcessFuelOffline">
+<tt class="descclassname">RbwrTh.</tt><tt class="descname">ProcessFuelOffline</tt><big>(</big><em>bocFileName</em>, <em>eocFileName</em>, <em>newFileName</em><big>)</big><a class="reference internal" href="_modules/RbwrTh.html#ProcessFuelOffline"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RbwrTh.ProcessFuelOffline" title="Permalink to this definition">¶</a></dt>
+<dd><p>Offline fuel processing helper.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="RbwrTh.RbwrThBoilingCalculation">
+<tt class="descclassname">RbwrTh.</tt><tt class="descname">RbwrThBoilingCalculation</tt><big>(</big><em>self</em>, <em>transportOutputFile</em><big>)</big><a class="reference internal" href="_modules/RbwrTh.html#RbwrThBoilingCalculation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RbwrTh.RbwrThBoilingCalculation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Override coolant density calculation.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="RbwrTh.RbwrThRecycle">
+<tt class="descclassname">RbwrTh.</tt><tt class="descname">RbwrThRecycle</tt><big>(</big><em>bocTransportFile</em>, <em>eocTransportFile</em><big>)</big><a class="reference internal" href="_modules/RbwrTh.html#RbwrThRecycle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RbwrTh.RbwrThRecycle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Override fuel processing.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="RbwrTh.Steam">
+<em class="property">class </em><tt class="descclassname">RbwrTh.</tt><tt class="descname">Steam</tt><big>(</big><em>pressure</em>, <em>temperature</em>, <em>massFlowRate</em>, <em>heatedDiameter</em>, <em>hydraulicDiameter</em>, <em>flowArea</em><big>)</big><a class="reference internal" href="_modules/RbwrTh.html#Steam"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RbwrTh.Steam" title="Permalink to this definition">¶</a></dt>
+<dd><p>Steam thermodynamic properties.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="RbwrTh.UpdateCoolantDensitys">
+<tt class="descclassname">RbwrTh.</tt><tt class="descname">UpdateCoolantDensitys</tt><big>(</big><em>self</em>, <em>transportOutputFile</em><big>)</big><a class="headerlink" href="#RbwrTh.UpdateCoolantDensitys" title="Permalink to this definition">¶</a></dt>
+<dd><p>Override coolant density calculation.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="RbwrTh.UpdateCoolantDensitysOffline">
+<tt class="descclassname">RbwrTh.</tt><tt class="descname">UpdateCoolantDensitysOffline</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/RbwrTh.html#UpdateCoolantDensitysOffline"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RbwrTh.UpdateCoolantDensitysOffline" title="Permalink to this definition">¶</a></dt>
+<dd><p>Offline coolant density update helper.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="RbwrTh.VoidFractionBaroczy">
+<tt class="descclassname">RbwrTh.</tt><tt class="descname">VoidFractionBaroczy</tt><big>(</big><em>steam</em>, <em>quality</em><big>)</big><a class="reference internal" href="_modules/RbwrTh.html#VoidFractionBaroczy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RbwrTh.VoidFractionBaroczy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform Baroczy void fraction correlation (Carey, p.512).</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="RbwrTh.VoidFractionBestion">
+<tt class="descclassname">RbwrTh.</tt><tt class="descname">VoidFractionBestion</tt><big>(</big><em>steam</em>, <em>quality</em><big>)</big><a class="reference internal" href="_modules/RbwrTh.html#VoidFractionBestion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RbwrTh.VoidFractionBestion" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform Bestion void fraction correlation.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="RbwrTh.VoidFractionChexalLellouche">
+<tt class="descclassname">RbwrTh.</tt><tt class="descname">VoidFractionChexalLellouche</tt><big>(</big><em>steam</em>, <em>quality</em><big>)</big><a class="reference internal" href="_modules/RbwrTh.html#VoidFractionChexalLellouche"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RbwrTh.VoidFractionChexalLellouche" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform Chexal-Lellouche void fraction correlation.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="RbwrTh.VoidFractionDriftFlux">
+<tt class="descclassname">RbwrTh.</tt><tt class="descname">VoidFractionDriftFlux</tt><big>(</big><em>x</em>, <em>rhol</em>, <em>rhov</em>, <em>G</em>, <em>C0</em>, <em>Vvj</em><big>)</big><a class="reference internal" href="_modules/RbwrTh.html#VoidFractionDriftFlux"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RbwrTh.VoidFractionDriftFlux" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform generic drift-flux void fraction correlation.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="RbwrTh.VoidFractionGeneric">
+<tt class="descclassname">RbwrTh.</tt><tt class="descname">VoidFractionGeneric</tt><big>(</big><em>x</em>, <em>rhol</em>, <em>rhov</em>, <em>mul</em>, <em>muv</em>, <em>Bb</em>, <em>n1</em>, <em>n2</em>, <em>n3</em><big>)</big><a class="reference internal" href="_modules/RbwrTh.html#VoidFractionGeneric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RbwrTh.VoidFractionGeneric" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrurn generic void fraction correlation (Carey, p.512).</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="RbwrTh.VoidFractionHomogeneous">
+<tt class="descclassname">RbwrTh.</tt><tt class="descname">VoidFractionHomogeneous</tt><big>(</big><em>steam</em>, <em>quality</em><big>)</big><a class="reference internal" href="_modules/RbwrTh.html#VoidFractionHomogeneous"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RbwrTh.VoidFractionHomogeneous" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform homogeneous void fraction correlation (Carey, p.512).</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="RbwrTh.VoidFractionLM">
+<tt class="descclassname">RbwrTh.</tt><tt class="descname">VoidFractionLM</tt><big>(</big><em>steam</em>, <em>quality</em><big>)</big><a class="reference internal" href="_modules/RbwrTh.html#VoidFractionLM"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RbwrTh.VoidFractionLM" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform Lockhart and Martinelli void fraction correlation (Carey, p.512).</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="RbwrTh.VoidFractionLPG">
+<tt class="descclassname">RbwrTh.</tt><tt class="descname">VoidFractionLPG</tt><big>(</big><em>steam</em>, <em>quality</em><big>)</big><a class="reference internal" href="_modules/RbwrTh.html#VoidFractionLPG"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RbwrTh.VoidFractionLPG" title="Permalink to this definition">¶</a></dt>
+<dd><p>Peform Liao/Parlos/Griffith (LPG) void fraction correlation.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="RbwrTh.VoidFractionRELAP">
+<tt class="descclassname">RbwrTh.</tt><tt class="descname">VoidFractionRELAP</tt><big>(</big><em>steam</em>, <em>quality</em><big>)</big><a class="headerlink" href="#RbwrTh.VoidFractionRELAP" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform Chexal-Lellouche void fraction correlation.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="RbwrTh.VoidFractionThom">
+<tt class="descclassname">RbwrTh.</tt><tt class="descname">VoidFractionThom</tt><big>(</big><em>steam</em>, <em>quality</em><big>)</big><a class="reference internal" href="_modules/RbwrTh.html#VoidFractionThom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RbwrTh.VoidFractionThom" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform Thom void fraction correlation (Carey, p.512).</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="RbwrTh.VoidFractionWallis">
+<tt class="descclassname">RbwrTh.</tt><tt class="descname">VoidFractionWallis</tt><big>(</big><em>steam</em>, <em>quality</em><big>)</big><a class="reference internal" href="_modules/RbwrTh.html#VoidFractionWallis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RbwrTh.VoidFractionWallis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform Wallis void fraction correlation (Carey, p.512).</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="RbwrTh.VoidFractionZivi">
+<tt class="descclassname">RbwrTh.</tt><tt class="descname">VoidFractionZivi</tt><big>(</big><em>steam</em>, <em>quality</em><big>)</big><a class="reference internal" href="_modules/RbwrTh.html#VoidFractionZivi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RbwrTh.VoidFractionZivi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform Zivi void fraction correlation (Carey, p.512).</p>
+</dd></dl>
+
+</div>
+<div class="section" id="rbwrac">
+<h2>RbwrAc<a class="headerlink" href="#rbwrac" title="Permalink to this headline">¶</a></h2>
+<p>RbwrAc.py is a MocDown external library which serves as an extension to RbwrTh.py.  Only the fuel processing method is modified.</p>
+<span class="target" id="module-RbwrAc"></span><dl class="function">
+<dt id="RbwrAc.ProcessFuelOffline">
+<tt class="descclassname">RbwrAc.</tt><tt class="descname">ProcessFuelOffline</tt><big>(</big><em>bocFileName</em>, <em>eocFileName</em>, <em>newFileName</em><big>)</big><a class="reference internal" href="_modules/RbwrAc.html#ProcessFuelOffline"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RbwrAc.ProcessFuelOffline" title="Permalink to this definition">¶</a></dt>
+<dd><p>Offline fuel processing helper.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="RbwrAc.RbwrACRecycle">
+<tt class="descclassname">RbwrAc.</tt><tt class="descname">RbwrACRecycle</tt><big>(</big><em>bocTransportFile</em>, <em>eocTransportFile</em><big>)</big><a class="reference internal" href="_modules/RbwrAc.html#RbwrACRecycle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#RbwrAc.RbwrACRecycle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Override fuel processing.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="pecs-check">
+<h2>PECS-Check<a class="headerlink" href="#pecs-check" title="Permalink to this headline">¶</a></h2>
+<p>PecsCheck.py is a benchmark for code-to-code comparison with PECS.  It inherits MocDown and modifies some depletion and recycling methods to emulate the PECS simulation.</p>
+<span class="target" id="module-PecsCheck"></span><dl class="function">
+<dt id="PecsCheck.GetZa2Moles">
+<tt class="descclassname">PecsCheck.</tt><tt class="descname">GetZa2Moles</tt><big>(</big><em>self</em>, <em>cellNumbers=None</em>, <em>endOfCycle=False</em><big>)</big><a class="reference internal" href="_modules/PecsCheck.html#GetZa2Moles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PecsCheck.GetZa2Moles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Override dicionary mapping isotope to moles.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="PecsCheck.PECSCalculation">
+<em class="property">class </em><tt class="descclassname">PecsCheck.</tt><tt class="descname">PECSCalculation</tt><big>(</big><em>arguments</em><big>)</big><a class="reference internal" href="_modules/PecsCheck.html#PECSCalculation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PecsCheck.PECSCalculation" title="Permalink to this definition">¶</a></dt>
+<dd><p>PECS-syle replacement for RecycleCalculation.</p>
+<dl class="method">
+<dt id="PecsCheck.PECSCalculation.Equilibrate">
+<tt class="descname">Equilibrate</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/PecsCheck.html#PECSCalculation.Equilibrate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PecsCheck.PECSCalculation.Equilibrate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute PECS-style recycling.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="PecsCheck.PECSCalculation.GetBaseName">
+<tt class="descname">GetBaseName</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/PecsCheck.html#PECSCalculation.GetBaseName"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PecsCheck.PECSCalculation.GetBaseName" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return base of MCNP input filename.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="PecsCheck.PECSCalculation.GetDisplayFiles">
+<tt class="descname">GetDisplayFiles</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/PecsCheck.html#PECSCalculation.GetDisplayFiles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PecsCheck.PECSCalculation.GetDisplayFiles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return if file operations are verbose.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="PecsCheck.PECSCalculation.GetIsPickleTransmute">
+<tt class="descname">GetIsPickleTransmute</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/PecsCheck.html#PECSCalculation.GetIsPickleTransmute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PecsCheck.PECSCalculation.GetIsPickleTransmute" title="Permalink to this definition">¶</a></dt>
+<dd><p>PECS-style calculations only transmute!.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="PecsCheck.PECSCalculation.GetOriginalPickle">
+<tt class="descname">GetOriginalPickle</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/PecsCheck.html#PECSCalculation.GetOriginalPickle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PecsCheck.PECSCalculation.GetOriginalPickle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return initial pickle.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="PecsCheck.PECSCalculation.GetOriginalTransport">
+<tt class="descname">GetOriginalTransport</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/PecsCheck.html#PECSCalculation.GetOriginalTransport"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PecsCheck.PECSCalculation.GetOriginalTransport" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return initial MCNP input file.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="PecsCheck.PECSCalculation.GetRecycleString">
+<tt class="descname">GetRecycleString</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/PecsCheck.html#PECSCalculation.GetRecycleString"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PecsCheck.PECSCalculation.GetRecycleString" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return string for current PECS-style recycling step.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="PecsCheck.PECSCalculation.Populate">
+<tt class="descname">Populate</tt><big>(</big><em>arguments</em><big>)</big><a class="reference internal" href="_modules/PecsCheck.html#PECSCalculation.Populate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PecsCheck.PECSCalculation.Populate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Populate.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="PecsCheck.PECSDepletion">
+<em class="property">class </em><tt class="descclassname">PecsCheck.</tt><tt class="descname">PECSDepletion</tt><big>(</big><em>originalTransportFile</em>, <em>depletionCalculationPickle</em>, <em>recycleIndex</em><big>)</big><a class="reference internal" href="_modules/PecsCheck.html#PECSDepletion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PecsCheck.PECSDepletion" title="Permalink to this definition">¶</a></dt>
+<dd><p>PECS-syle replacement for DepletionCalculation.</p>
+<dl class="method">
+<dt id="PecsCheck.PECSDepletion.Deplete">
+<tt class="descname">Deplete</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/PecsCheck.html#PECSDepletion.Deplete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PecsCheck.PECSDepletion.Deplete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute PECS-style depletion.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="PecsCheck.PECSDepletion.GetCellNumber2Micros">
+<tt class="descname">GetCellNumber2Micros</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/PecsCheck.html#PECSDepletion.GetCellNumber2Micros"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PecsCheck.PECSDepletion.GetCellNumber2Micros" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return dictionary mapping cell to one-group microscopic cross-sections for current depletion step.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="PecsCheck.PECSDepletion.GetCellNumber2Zam2Moles">
+<tt class="descname">GetCellNumber2Zam2Moles</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/PecsCheck.html#PECSDepletion.GetCellNumber2Zam2Moles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PecsCheck.PECSDepletion.GetCellNumber2Zam2Moles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return dictionary mapping cell to isotope to moles for current depletion step.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="PecsCheck.PECSDepletion.GetCellNumberBurnRate">
+<tt class="descname">GetCellNumberBurnRate</tt><big>(</big><em>cellNumber</em><big>)</big><a class="reference internal" href="_modules/PecsCheck.html#PECSDepletion.GetCellNumberBurnRate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PecsCheck.PECSDepletion.GetCellNumberBurnRate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return cell flux or power for current depletion step.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="PecsCheck.PECSDepletion.GetCellNumberMicros">
+<tt class="descname">GetCellNumberMicros</tt><big>(</big><em>cellNumber</em><big>)</big><a class="reference internal" href="_modules/PecsCheck.html#PECSDepletion.GetCellNumberMicros"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PecsCheck.PECSDepletion.GetCellNumberMicros" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return one-group microscopic cross-sections of a cell for this depletion step.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="PecsCheck.PECSDepletion.GetCellNumberVolume">
+<tt class="descname">GetCellNumberVolume</tt><big>(</big><em>cellNumber</em><big>)</big><a class="reference internal" href="_modules/PecsCheck.html#PECSDepletion.GetCellNumberVolume"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PecsCheck.PECSDepletion.GetCellNumberVolume" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return volume of a cell.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="PecsCheck.PECSDepletion.GetCellNumberZam2Moles">
+<tt class="descname">GetCellNumberZam2Moles</tt><big>(</big><em>cellNumber</em><big>)</big><a class="reference internal" href="_modules/PecsCheck.html#PECSDepletion.GetCellNumberZam2Moles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PecsCheck.PECSDepletion.GetCellNumberZam2Moles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return dictionary mapping isotope to moles of a cell for this depletion step.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="PecsCheck.PECSDepletion.GetDefaultPhotonLibraryFileName">
+<tt class="descname">GetDefaultPhotonLibraryFileName</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/PecsCheck.html#PECSDepletion.GetDefaultPhotonLibraryFileName"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PecsCheck.PECSDepletion.GetDefaultPhotonLibraryFileName" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return ORIGEN2 default photon library filename.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="PecsCheck.PECSDepletion.GetDisplayFiles">
+<tt class="descname">GetDisplayFiles</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/PecsCheck.html#PECSDepletion.GetDisplayFiles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PecsCheck.PECSDepletion.GetDisplayFiles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return if file operations are verbose.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="PecsCheck.PECSDepletion.GetIsPickleTransmute">
+<tt class="descname">GetIsPickleTransmute</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/PecsCheck.html#PECSDepletion.GetIsPickleTransmute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PecsCheck.PECSDepletion.GetIsPickleTransmute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return if current depletion step is to be transmuted using pickles.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="PecsCheck.PECSDepletion.GetParameters">
+<tt class="descname">GetParameters</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/PecsCheck.html#PECSDepletion.GetParameters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PecsCheck.PECSDepletion.GetParameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return mocdown input file parameters.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="PecsCheck.PECSDepletion.GetPickle">
+<tt class="descname">GetPickle</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/PecsCheck.html#PECSDepletion.GetPickle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PecsCheck.PECSDepletion.GetPickle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return depletion calculation pickle.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="PecsCheck.PECSDepletion.GetPickleFileName">
+<tt class="descname">GetPickleFileName</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/PecsCheck.html#PECSDepletion.GetPickleFileName"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PecsCheck.PECSDepletion.GetPickleFileName" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return depletion calculation pickle filename.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="PecsCheck.PECSDepletion.GetRecycleIndex">
+<tt class="descname">GetRecycleIndex</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/PecsCheck.html#PECSDepletion.GetRecycleIndex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PecsCheck.PECSDepletion.GetRecycleIndex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return index of current recycling step.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="PecsCheck.PECSDepletion.PrepareDepletion">
+<tt class="descname">PrepareDepletion</tt><big>(</big><em>depletionCalculationPickle</em><big>)</big><a class="reference internal" href="_modules/PecsCheck.html#PECSDepletion.PrepareDepletion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PecsCheck.PECSDepletion.PrepareDepletion" title="Permalink to this definition">¶</a></dt>
+<dd><p>Populate default PECS-style depletion parameters.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="PecsCheck.PECSDepletion.PrepareTransmute">
+<tt class="descname">PrepareTransmute</tt><big>(</big><em>cellNumber</em>, <em>tmpDir='./'</em><big>)</big><a class="reference internal" href="_modules/PecsCheck.html#PECSDepletion.PrepareTransmute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PecsCheck.PECSDepletion.PrepareTransmute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prepare transmute calculation.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="PecsCheck.PECSDepletion.ProcessFuel">
+<tt class="descname">ProcessFuel</tt><big>(</big><em>previousPickle</em><big>)</big><a class="headerlink" href="#PecsCheck.PECSDepletion.ProcessFuel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Override fuel processing.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="PecsCheck.PECSDepletion.Transmute">
+<tt class="descname">Transmute</tt><big>(</big><em>cellNumber</em>, <em>tmpDir='./'</em>, <em>currentDir=''</em><big>)</big><a class="reference internal" href="_modules/PecsCheck.html#PECSDepletion.Transmute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PecsCheck.PECSDepletion.Transmute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute ORIGEN2.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="PecsCheck.PECSDepletion.TransmuteThread">
+<tt class="descname">TransmuteThread</tt><big>(</big><em>cellNumber</em>, <em>currentDir</em><big>)</big><a class="reference internal" href="_modules/PecsCheck.html#PECSDepletion.TransmuteThread"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PecsCheck.PECSDepletion.TransmuteThread" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute transmute concurrently for a cell.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="PecsCheck.PECSDepletion.TransmuteThreads">
+<tt class="descname">TransmuteThreads</tt><big>(</big><em>currentDir</em><big>)</big><a class="reference internal" href="_modules/PecsCheck.html#PECSDepletion.TransmuteThreads"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PecsCheck.PECSDepletion.TransmuteThreads" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute transmute concurrently for each cell.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="PecsCheck.ProcessFuel">
+<tt class="descclassname">PecsCheck.</tt><tt class="descname">ProcessFuel</tt><big>(</big><em>self</em>, <em>previousPickle</em><big>)</big><a class="reference internal" href="_modules/PecsCheck.html#ProcessFuel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PecsCheck.ProcessFuel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Override fuel processing.</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Source code documentation for MocDown extensions</a><ul>
+<li><a class="reference internal" href="#rbwrth">RbwrTh</a></li>
+<li><a class="reference internal" href="#rbwrac">RbwrAc</a></li>
+<li><a class="reference internal" href="#pecs-check">PECS-Check</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="src.html"
+                        title="previous chapter">Source code documentation for MocDown</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/lib.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="src.html" title="Source code documentation for MocDown"
+             >previous</a> |</li>
+        <li><a href="index.html">MocDown 1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Jeffrey Edwin Seifried.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

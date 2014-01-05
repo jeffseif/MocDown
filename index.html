@@ -1,0 +1,220 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Overview of MocDown &mdash; MocDown 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="MocDown 1.0 documentation" href="#" />
+    <link rel="next" title="Theory and user’s manual for MocDown" href="man.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="man.html" title="Theory and user’s manual for MocDown"
+             accesskey="N">next</a> |</li>
+        <li><a href="#">MocDown 1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="overview-of-mocdown">
+<h1>Overview of MocDown<a class="headerlink" href="#overview-of-mocdown" title="Permalink to this headline">¶</a></h1>
+<img alt="The RBWR-Th multi-assembly unit cell has been simulated with MocDown." src="_images/assembly.png" style="height: 200px;" />
+<img alt="MocDown employs an accelerated equilibrium core composition search algorithm." src="_images/algorithm.png" style="height: 200px;" />
+<img alt="MocDown efficiently finds the RBWR-Th equilibrium core composition." src="_images/isoStacked.png" style="height: 200px;" />
+<img alt="MocDown's online thermo-fluids coupling accommodates the strong physical coupling between neutron and thermal fields in the RBWR-Th core." src="_images/thCoupling.png" style="height: 200px;" />
+<p>MocDown is a nuclear reactor core simulator.  It performs Monte Carlo depletion using <a class="reference external" href="https://mcnp.lanl.gov/">MCNP6.1</a> for neutron transport and <a class="reference external" href="https://rsicc.ornl.gov/codes/ccc/ccc3/ccc-371.html">ORIGEN2.2</a> for transmutation&#8211;just like the  <a class="reference external" href="https://rsicc.ornl.gov/codes/psr/psr4/psr-455.html">MONTEBURNS</a>, <a class="reference external" href="https://rsicc.ornl.gov/codes/psr/psr3/psr-365.html">MOCUP</a>, and <a class="reference external" href="https://rsicc.ornl.gov/codes/ccc/ccc7/ccc-769.html">VESTA</a> codes.</p>
+<p>MocDown is written in object-oriented <a class="reference external" href="https://python.org/">Python3</a>.  It employs an accelerated equilibrium core composition search algorithm&#8211;ideal for systems with multi-recycling fuel cycles&#8211;and allows for loose, online coupling of thermo-fluids models.  MocDown also takes a simple approach towards neutron source rate scaling which accounts for isotopic composition-dependent decay heat.</p>
+<div class="section" id="access">
+<h2>Access<a class="headerlink" href="#access" title="Permalink to this headline">¶</a></h2>
+<p>The MocDown official code repository is hosted on <a class="reference external" href="https://github.com/jeffseif/MocDown">github</a>.  From that repo, the MocDown source code can be downloaded as a <a class="reference external" href="https://github.com/jeffseif/MocDown/archive/master.tar.gz">tarball</a> or <a class="reference external" href="https://github.com/jeffseif/MocDown/archive/master.zip">zipfile</a> or cloned with git:</p>
+<div class="highlight-python"><pre>git clone git://github.com/jeffseif/MocDown.git ;</pre>
+</div>
+<p>Before it can be executed, MocDown has the following dependencies:</p>
+<ul class="simple">
+<li>Python 3</li>
+<li>numpy</li>
+<li>ORIGEN2.2</li>
+<li>MCNP5, MCNPX, or MCNP6</li>
+</ul>
+</div>
+<div class="section" id="documentation">
+<h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h2>
+<p>Users and developers should consult the following resources:</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="man.html">Theory and user&#8217;s manual for MocDown</a></li>
+<li class="toctree-l1"><a class="reference internal" href="src.html">Source code documentation for MocDown</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lib.html">Source code documentation for MocDown extensions</a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="how-to-cite">
+<h2>How to cite<a class="headerlink" href="#how-to-cite" title="Permalink to this headline">¶</a></h2>
+<p>The best source for citing MocDown is a <a class="reference download internal" href="_downloads/seifried2013aec.pdf"><tt class="xref download docutils literal"><span class="pre">paper</span></tt></a> from the proceedings of the <a class="reference external" href="https://www.sfen.fr/SNA-and-MC-2013">2013 SNA&amp;MC</a> conference:</p>
+<div class="highlight-python"><pre>J. E. Seifried, P. M. Gorman, J. L. Vujic, and E. Greenspan. Accelerated Equilibrium Core Composition Search Using a New MCNP-Based Simulator. Proceedings of the SNA&amp;MC 2013 conference, Paris, France, October, 2013.</pre>
+</div>
+</div>
+<div class="section" id="future-work">
+<h2>Future work<a class="headerlink" href="#future-work" title="Permalink to this headline">¶</a></h2>
+<p>MocDown can always be improved!  The following is a (non-exhaustive) to-do list for code development.</p>
+<ul class="simple">
+<li>Add unit tests</li>
+<li>Finalize implementation of ParseMcnp.py</li>
+<li>Implement ORIGEN with Python (PORIGEN)<ul>
+<li>Faster runtime</li>
+<li>No I/O</li>
+<li>No significant figure loss of precision</li>
+<li>One set of isotopes</li>
+<li>Calculate dose, radiotoxicity, and spontaneous neutron generation rates</li>
+</ul>
+</li>
+<li>Improve RBWR-Th thermo-fluids models<ul>
+<li>Add conservation of momentum</li>
+<li>Attach fine dP traverse</li>
+<li>Improve sub-cooling</li>
+<li>Couple to PATHS?</li>
+</ul>
+</li>
+<li>Implement fuel temperature coupling<ul>
+<li>Requires ACE data at many temperatures</li>
+<li>Code the MOX thermal conductivity correlation from MIT</li>
+</ul>
+</li>
+<li>Generaliz fuel shuffling</li>
+<li>Refactor and generalize MCNP input updates<ul>
+<li>Cell density</li>
+<li>Cell temperature</li>
+<li>Material composition</li>
+</ul>
+</li>
+<li>Add more post-processing tools<ul>
+<li>Reactivity swing</li>
+<li>Recycling output file</li>
+<li>Other performance metrics</li>
+</ul>
+</li>
+<li>Add a switch to perform transport even when it is not needed</li>
+<li>Implement modified Euler predictor/corrector method of <a class="reference external" href="http://virtual.vtt.fi/virtual/montecarlo/mtg/2012_Madrid/Dan_Kotlyar.pdf">Kotlyar, p. 9</a></li>
+<li>Use __getstate__ and __setstate__ methods in creating pickles</li>
+</ul>
+</div>
+</div>
+<div class="section" id="acknowledgements">
+<h1>Acknowledgements<a class="headerlink" href="#acknowledgements" title="Permalink to this headline">¶</a></h1>
+<p>MocDown was developed using funding received from the U.S. Department of Energy Office of Nuclear Energy&#8217;s Nuclear Energy Univeersity Programs and U.S. Department of Energy National Nuclear Security Administration under Award Number DE-NA0000979 at the <a class="reference external" href="http://www.nuc.berkeley.edu/">University of California, Berkeley Department of Nuclear Engineering</a>.</p>
+<img alt="NEUP." src="_images/neupLogo.jpg" style="height: 60px;" />
+<img alt="NNSA." src="_images/nnsaLogo.png" style="height: 60px;" />
+<img alt="NSSC." src="_images/nsscLogo.jpg" style="height: 60px;" />
+<img alt="UCB." src="_images/ucbSeal.png" style="height: 60px;" />
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><a class="reference internal" href="genindex.html"><em>Index</em></a></li>
+<li><a class="reference internal" href="py-modindex.html"><em>Module Index</em></a></li>
+<li><a class="reference internal" href="search.html"><em>Search Page</em></a></li>
+</ul>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Overview of MocDown</a><ul>
+<li><a class="reference internal" href="#access">Access</a></li>
+<li><a class="reference internal" href="#documentation">Documentation</a><ul>
+</ul>
+</li>
+<li><a class="reference internal" href="#how-to-cite">How to cite</a></li>
+<li><a class="reference internal" href="#future-work">Future work</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#acknowledgements">Acknowledgements</a></li>
+<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+</ul>
+
+  <h4>Next topic</h4>
+  <p class="topless"><a href="man.html"
+                        title="next chapter">Theory and user&#8217;s manual for MocDown</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/index.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="man.html" title="Theory and user’s manual for MocDown"
+             >next</a> |</li>
+        <li><a href="#">MocDown 1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Jeffrey Edwin Seifried.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
